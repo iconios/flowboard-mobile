@@ -2,9 +2,9 @@ import NotificationBar from "@/components/notificationBar";
 import { useAppTheme } from "@/hooks/theme";
 import { LogInFormSchema, LoginFormType } from "@/types/log-in.types";
 import { NotificationBarType } from "@/types/sign-up.types";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { FormikHelpers, useFormik } from "formik";
-import { useEffect, JSX, useState } from "react";
+import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
@@ -12,11 +12,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  Platform,
 } from "react-native";
 import { HelperText, TextInput, Button } from "react-native-paper";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import HeaderTitle from "@/components/stack/headerTitle";
 
 const LoginScreen = () => {
   const [notification, setNotification] = useState<NotificationBarType | null>(
@@ -25,22 +23,7 @@ const LoginScreen = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [triggerKey, setTriggerKey] = useState(0);
   const router = useRouter();
-  const navigation = useNavigation();
   const theme = useAppTheme();
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: (props: JSX.IntrinsicAttributes) => (
-        <HeaderTitle {...props} />
-      ),
-      headerStyle: {
-        shadowOpacity: 0,
-        height: Platform.OS === "ios" ? 120 : 70,
-      },
-      headerTintColor: "#FF6D00",
-    });
-  }, [navigation]);
 
   // Initial values for the form
   const initialValues = {

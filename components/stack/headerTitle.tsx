@@ -1,7 +1,13 @@
 import { useAppTheme } from "@/hooks/theme";
 import { View, StyleSheet, Image, Text } from "react-native";
 
-const HeaderTitle = () => {
+const HeaderTitle = ({
+  children,
+  tintColor,
+}: {
+  children: string;
+  tintColor?: string;
+}) => {
   const theme = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -9,6 +15,7 @@ const HeaderTitle = () => {
       justifyContent: "center",
       flexDirection: "row",
       paddingHorizontal: 20,
+      height: 60,
     },
     image: {
       width: 50,
@@ -32,6 +39,7 @@ const HeaderTitle = () => {
         style={styles.image}
       />
       <Text style={styles.flowBoardText}>FlowBoard</Text>
+      <Text style={{ color: tintColor || "#000" }}>{children}</Text>
     </View>
   );
 };

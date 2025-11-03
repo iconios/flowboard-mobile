@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { Button, Checkbox, HelperText, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,11 +14,10 @@ import {
   SignUpFormSchema,
   SignUpFormType,
 } from "@/types/sign-up.types";
-import { useRouter, useNavigation } from "expo-router";
-import { JSX, useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import NotificationBar from "@/components/notificationBar";
-import HeaderTitle from "@/components/stack/headerTitle";
 
 const SignUpScreen = () => {
   const [checked, setChecked] = useState(false);
@@ -31,22 +29,7 @@ const SignUpScreen = () => {
     useState(false);
   const [triggerKey, setTriggerKey] = useState(0);
   const router = useRouter();
-  const navigation = useNavigation();
   const theme = useAppTheme();
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: (props: JSX.IntrinsicAttributes) => (
-        <HeaderTitle {...props} />
-      ),
-      headerStyle: {
-        shadowOpacity: 0,
-        height: Platform.OS === "ios" ? 120 : 70,
-      },
-      headerTintColor: "#FF6D00",
-    });
-  }, [navigation]);
 
   // Initial values for the form
   const initialValues = {

@@ -4,7 +4,6 @@ import {
   Text,
   KeyboardAvoidingView,
   ScrollView,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "@/hooks/theme";
@@ -14,34 +13,17 @@ import {
   ForgotPasswordType,
 } from "@/types/forgot-password.types";
 import { FormikHelpers, useFormik } from "formik";
-import { JSX, useEffect, useState } from "react";
+import { useState } from "react";
 import { NotificationBarType } from "@/types/sign-up.types";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import NotificationBar from "@/components/notificationBar";
-import { useNavigation } from "expo-router";
-import HeaderTitle from "@/components/stack/headerTitle";
 
 const ResetPasswordScreen = () => {
   const theme = useAppTheme();
-  const navigation = useNavigation();
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
   const [triggerKey, setTriggerKey] = useState(0);
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: (props: JSX.IntrinsicAttributes) => (
-        <HeaderTitle {...props} />
-      ),
-      headerStyle: {
-        shadowOpacity: 0,
-        height: Platform.OS === "ios" ? 120 : 70,
-      },
-      headerTintColor: "#FF6D00",
-    });
-  }, [navigation]);
 
   // Form initial values
   const initialValues = {

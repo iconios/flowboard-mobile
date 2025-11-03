@@ -1,16 +1,21 @@
 const API_URLS = {
   development: "http://localhost:8000",
   staging: "http://localhost:8000",
+  production: "https://flow-board.onrender.com:8000",
 };
 
 // Determine current environment
 const getEnvironment = () => {
   if (__DEV__) return "development";
   if (process.env.APP_VARIANT === "staging") return "staging";
+  if (process.env.APP_VARIANT === "production") return "production";
   return "production";
 };
 
 const currentEnv = getEnvironment();
+if (!API_URLS[currentEnv]) {
+  console.warn(`No API URL configured for environment: ${currentEnv}`);
+}
 
 export default {
   name: "FlowBoard",

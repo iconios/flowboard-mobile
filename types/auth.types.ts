@@ -38,4 +38,15 @@ export const ForgotPasswordServerResponseSchema = z.object({
   error: z.string().optional(),
 });
 
-export type ForgotPasswordServerResponseType = z.infer<typeof ForgotPasswordServerResponseSchema>;
+export type ForgotPasswordServerResponseType = z.infer<
+  typeof ForgotPasswordServerResponseSchema
+>;
+
+export const UserDataSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  firstname: z.string(),
+  token: z.string(),
+});
+
+export type UserDataType = z.infer<typeof UserDataSchema>;

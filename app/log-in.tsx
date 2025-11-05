@@ -4,7 +4,7 @@ import { LogInFormSchema, LoginFormType } from "@/types/log-in.types";
 import { NotificationBarType } from "@/types/sign-up.types";
 import { useRouter } from "expo-router";
 import { FormikHelpers, useFormik } from "formik";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
@@ -15,8 +15,11 @@ import {
 } from "react-native";
 import { HelperText, TextInput, Button } from "react-native-paper";
 import { toFormikValidationSchema } from "zod-formik-adapter";
+import { useMutation } from "@tanstack/react-query";
+import { LoginService } from "@/services/auth.service";
 
 const LoginScreen = () => {
+  // Initialize all variables and constants
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
@@ -25,6 +28,27 @@ const LoginScreen = () => {
   const router = useRouter();
   const theme = useAppTheme();
 
+  // Mutation library for user log-in
+  const mutation = useMutation({
+    mutationKey: ["user-login"],
+    mutationFn: (values: LoginFormType) => LoginService(values),
+    onSuccess: (result) => {
+      setTriggerKey((prev) => prev + 1);
+      setNotification({
+        message: `Welcome ${result.firstname}`,
+        messageType: "success",
+      });
+      formik.resetForm();
+      router.replace("/tabs");
+    },
+    onError: (error) => {
+      setNotification({
+        message: error.message || "Failed to log in user",
+        messageType: "error",
+      });
+    },
+  });
+
   // Initial values for the form
   const initialValues = {
     email: "",
@@ -32,17 +56,17 @@ const LoginScreen = () => {
   };
 
   // Handler for the form submission
-  const handleFormSubmit = (
+  const handleFormSubmit = async (
     values: LoginFormType,
-    { resetForm, setSubmitting }: FormikHelpers<LoginFormType>,
+    { setSubmitting }: FormikHelpers<LoginFormType>,
   ) => {
-    setTriggerKey((prev) => prev + 1);
-    setNotification({
-      message: "handler called",
-      messageType: "success",
-    });
-    resetForm();
-    setSubmitting(false);
+    try {
+      await mutation.mutateAsync(values);
+    } catch (error) {
+      console.error("Network error while logging in user", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Initialize the formik library
@@ -53,7 +77,8 @@ const LoginScreen = () => {
   });
 
   // Styles object
-  const styles = StyleSheet.create({
+  const styles = useMemo(() => 
+    StyleSheet.create({
     container: {
       backgroundColor: theme.colors.background,
       flex: 1,
@@ -118,7 +143,7 @@ const LoginScreen = () => {
       marginTop: 5,
       marginRight: -9,
     },
-  });
+  }), [theme])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -190,10 +215,10 @@ const LoginScreen = () => {
               labelStyle={styles.signUp}
               mode="contained"
               onPress={() => formik.handleSubmit()}
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || mutation.isPending}
               style={styles.loginButton}
             >
-              Log in
+              {mutation.isPending ? "Logging in" : "Log in"}
             </Button>
             <View style={styles.footer}>
               <Text>You do not have an account?</Text>

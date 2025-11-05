@@ -1,5 +1,5 @@
 const API_URLS = {
-  development: "http://localhost:8000",
+  development: "http://192.168.100.2:8000",
   staging: "http://localhost:8000",
   production: "https://flow-board.onrender.com:8000",
 };

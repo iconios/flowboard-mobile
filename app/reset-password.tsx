@@ -17,13 +17,36 @@ import { useState } from "react";
 import { NotificationBarType } from "@/types/sign-up.types";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import NotificationBar from "@/components/notificationBar";
+import { useMutation } from "@tanstack/react-query";
+import { ForgotPasswordService } from "@/services/auth.service";
 
 const ResetPasswordScreen = () => {
+  // 1. Initialize all variables and constants
   const theme = useAppTheme();
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
   const [triggerKey, setTriggerKey] = useState(0);
+
+  // 2. Mutation library for user forgot-password
+  const mutation = useMutation({
+    mutationKey: ["user-forgot-password"],
+    mutationFn: (values: ForgotPasswordType) => ForgotPasswordService(values),
+    onSuccess: (result) => {
+      setTriggerKey((prev) => prev + 1);
+      setNotification({
+        message: result,
+        messageType: "success",
+      });
+      formik.resetForm();
+    },
+    onError: (error) => {
+      setNotification({
+        message: error.message || "Failed to log in user",
+        messageType: "error",
+      });
+    },
+  });
 
   // Form initial values
   const initialValues = {
@@ -31,17 +54,17 @@ const ResetPasswordScreen = () => {
   };
 
   // Form submission handler
-  const handleSubmitForm = (
+  const handleSubmitForm = async (
     values: ForgotPasswordType,
-    { setSubmitting, resetForm }: FormikHelpers<ForgotPasswordType>,
+    { setSubmitting }: FormikHelpers<ForgotPasswordType>,
   ) => {
-    setTriggerKey((prev) => prev + 1);
-    setNotification({
-      message: "handler called",
-      messageType: "success",
-    });
-    resetForm();
-    setSubmitting(false);
+    try {
+      await mutation.mutateAsync(values);
+    } catch (error) {
+      console.error("Network error during forgot password service", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Initialize the formik library

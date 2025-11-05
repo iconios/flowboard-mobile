@@ -6,10 +6,20 @@ import {
   RegisterAccountSchema,
   RegisterAccountType,
   SignUpAuthServerResponseType,
+  UserDataType,
 } from "@/types/auth.types";
-import { ForgotPasswordSchema, ForgotPasswordType } from "@/types/forgot-password.types";
+import {
+  ForgotPasswordSchema,
+  ForgotPasswordType,
+} from "@/types/forgot-password.types";
 import { LogInFormSchema, LoginFormType } from "@/types/log-in.types";
 import { ZodError } from "zod";
+
+const AUTH_ENDPOINTS = {
+  REGISTER: "/auth/register",
+  LOGIN: "/auth/login",
+  FORGOT_PASSWORD: "/auth/forgot-password",
+} as const;
 
 /*
 #Plan:
@@ -27,7 +37,7 @@ const RegisterAccountService = async (userData: RegisterAccountType) => {
     const validatedData = RegisterAccountSchema.parse(userData);
 
     // 2. Pass the user data to the backend server
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    const response = await fetch(`${API_BASE_URL}${AUTH_ENDPOINTS.REGISTER}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,9 +87,11 @@ const LoginService = async (userLoginData: LoginFormType) => {
   try {
     const validatedData = LogInFormSchema.parse(userLoginData);
     console.log("Login server action called for", validatedData.email);
-    
+    console.log("API BASE URL", API_BASE_URL);
+    console.log("Login endpoint", AUTH_ENDPOINTS.LOGIN);
+
     // 2. Pass the input to the backend server API
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}${AUTH_ENDPOINTS.LOGIN}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,20 +99,31 @@ const LoginService = async (userLoginData: LoginFormType) => {
       body: JSON.stringify(validatedData),
     });
 
-    // 3. Get the result from the server and store the token
+    // 3. Get the result from the server and store the user data
     const result: LoginServerResponseType = await response.json();
 
     if (!result.success || !response.ok) {
       throw new Error(result.message);
     }
 
-    const token = result.token;
-    if (!token) throw new Error("Missing token");
-    
+    if (!result.token) throw new Error("Missing token");
+    const user = {
+      ...result.user,
+      token: result.token,
+    };
+
     const expires = new Date();
     expires.setDate(expires.getDate() + 365);
-    await SecureCookieManager.setCookie("token", token, {expires: expires.toISOString(), secure: true });
-    
+    const cookieSaved = await SecureCookieManager.setCookie(
+      "user",
+      JSON.stringify(user),
+      {
+        expires: expires.toISOString(),
+        secure: true,
+      },
+    );
+    if (!cookieSaved) throw new Error("Failed to save authentication data");
+
     // 4. Return response to client
     return result.user;
   } catch (error) {
@@ -116,7 +139,6 @@ const LoginService = async (userLoginData: LoginFormType) => {
   }
 };
 
-
 // Forgot Password Service
 /*
 #Plan:
@@ -125,28 +147,33 @@ const LoginService = async (userLoginData: LoginFormType) => {
 3. Get the result from the server and store the token
 4. Return response to client
 */
-const ForgotPasswordService = async (userEmail: ForgotPasswordType) => {
+const ForgotPasswordService = async (
+  userEmail: ForgotPasswordType,
+): Promise<string> => {
   // 1. Get and validate the inputs
   if (!API_BASE_URL) {
     throw new Error("Server Url is required");
   }
 
   try {
-    const {email} = ForgotPasswordSchema.parse(userEmail);
+    const { email } = ForgotPasswordSchema.parse(userEmail);
 
     // 2. Pass the input to the backend server API
-    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
+    const response = await fetch(
+      `${API_BASE_URL}${AUTH_ENDPOINTS.FORGOT_PASSWORD}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       },
-      body: JSON.stringify(email),
-    });
+    );
 
     const result: ForgotPasswordServerResponseType = await response.json();
     if (!result.success) {
-      throw new Error(`${result.message}`)
-    };
+      throw new Error(`${result.message}`);
+    }
 
     return result.message;
   } catch (error) {
@@ -160,6 +187,77 @@ const ForgotPasswordService = async (userEmail: ForgotPasswordType) => {
 
     throw new Error("Error resetting password. Please try again");
   }
-}
+};
 
-export { RegisterAccountService, LoginService, ForgotPasswordService };
+// Logout Service
+/*
+#Plan:
+1. Validate that token exists
+2. Execute the delete tokie method
+3. Return response to client
+*/
+const LogoutService = async (): Promise<boolean> => {
+  try {
+    // 1. Validate that token exists
+    const hasToken = await SecureCookieManager.hasCookie("user");
+    if (!hasToken) {
+      console.log("No user data found. User already logged out");
+      return true;
+    }
+
+    // 2. Execute the delete cookie method
+    const deletedCookie = await SecureCookieManager.deleteCookie("user");
+    if (!deletedCookie) throw new Error("Error clearing cookie for user data");
+
+    // 3. Return response to client
+    return true;
+  } catch (error) {
+    console.error("Error logging out", error);
+    return false;
+  }
+};
+
+// Verify User Service
+/*
+#Plan:
+1. Call the hasCookie static method to verify user authentication and return the status to the caller
+*/
+const VerifyUserService = async (): Promise<boolean> => {
+  try {
+    // 1. Call the hasCookie static method to verify user authentication
+    // and return the status to the caller
+    return await SecureCookieManager.hasCookie("user");
+  } catch (error) {
+    console.error("Error verifying user authentication", error);
+    return false;
+  }
+};
+
+// Get User Data Service
+/*
+#Plan
+1. Call the getCookie static method 
+2. Return value to the caller
+*/
+const GetUserDataService = async (): Promise<UserDataType | null> => {
+  try {
+    // 1. Call the getCookie static method
+    const userData = await SecureCookieManager.getCookie("user");
+
+    // 2. Return value to the caller
+    if (!userData) return null;
+    return userData;
+  } catch (error) {
+    console.error("Error getting user data", error);
+    return null;
+  }
+};
+
+export {
+  LogoutService,
+  RegisterAccountService,
+  LoginService,
+  ForgotPasswordService,
+  VerifyUserService,
+  GetUserDataService,
+};

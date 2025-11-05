@@ -18,8 +18,12 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import NotificationBar from "@/components/notificationBar";
+import { useMutation } from "@tanstack/react-query";
+import { RegisterAccountService } from "@/services/auth.service";
+import { RegisterAccountType } from "@/types/auth.types";
 
 const SignUpScreen = () => {
+  // Initialize all variables and constants
   const [checked, setChecked] = useState(false);
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
@@ -31,6 +35,27 @@ const SignUpScreen = () => {
   const router = useRouter();
   const theme = useAppTheme();
 
+  // Mutation library for new user registration
+  const mutation = useMutation({
+    mutationKey: ["sign-up"],
+    mutationFn: (values: RegisterAccountType) => RegisterAccountService(values),
+    onSuccess: (result) => {
+      setTriggerKey((prev) => prev + 1);
+      setNotification({
+        message: result.message,
+        messageType: "success",
+      });
+      formik.resetForm();
+      setChecked(false);
+    },
+    onError: (error) => {
+      setNotification({
+        message: error.message || "Failed to register user",
+        messageType: "error",
+      });
+    },
+  });
+
   // Initial values for the form
   const initialValues = {
     firstname: "",
@@ -41,18 +66,18 @@ const SignUpScreen = () => {
   };
 
   // Handler for the form submission
-  const handleFormSubmit = (
+  const handleFormSubmit = async (
     values: SignUpFormType,
-    { resetForm, setSubmitting }: FormikHelpers<SignUpFormType>,
+    { setSubmitting }: FormikHelpers<SignUpFormType>,
   ) => {
-    setTriggerKey((prev) => prev + 1);
-    setNotification({
-      message: "handler called",
-      messageType: "success",
-    });
-    resetForm();
-    setChecked(false);
-    setSubmitting(false);
+    const { confirmPassword, ...userData } = values;
+    try {
+      await mutation.mutateAsync(userData);
+    } catch (error) {
+      console.error("Network error while registering user", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Initialize the formik library

@@ -17,12 +17,14 @@ import { HelperText, TextInput, Button } from "react-native-paper";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useMutation } from "@tanstack/react-query";
 import { LoginService } from "@/services/auth.service";
+import { useAuth } from "@/hooks/useUserContext";
 
 const LoginScreen = () => {
   // Initialize all variables and constants
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const { setIsLoggedIn } = useAuth();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [triggerKey, setTriggerKey] = useState(0);
   const router = useRouter();
@@ -39,7 +41,10 @@ const LoginScreen = () => {
         messageType: "success",
       });
       formik.resetForm();
-      router.replace("/tabs");
+      setTimeout(() => {
+        setIsLoggedIn(true);
+        router.replace("/tabs/boards");
+      }, 1200);
     },
     onError: (error) => {
       setNotification({
@@ -77,73 +82,76 @@ const LoginScreen = () => {
   });
 
   // Styles object
-  const styles = useMemo(() => 
-    StyleSheet.create({
-    container: {
-      backgroundColor: theme.colors.background,
-      flex: 1,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-    },
-    content: {
-      display: "flex",
-      justifyContent: "space-between",
-    },
-    logInHeader: {
-      justifyContent: "center",
-      gap: 10,
-      marginBottom: 20,
-      marginTop: -15,
-    },
-    textInput: {
-      marginTop: 5,
-      backgroundColor: theme.colors.background,
-      color: theme.colors.text,
-    },
-    footer: {
-      display: "flex",
-      flexDirection: "row",
-      marginTop: 25,
-      justifyContent: "center",
-    },
-    signUp: {
-      color: theme.colors.custom.light,
-      fontFamily: theme.fonts.bodyMedium.fontFamily,
-      fontSize: theme.fonts.bodyMedium.fontSize,
-      fontWeight: theme.fonts.bodyMedium.fontWeight,
-      fontStyle: theme.fonts.bodyMedium.fontStyle,
-    },
-    login: {
-      marginTop: -1,
-      marginLeft: 3,
-    },
-    LogInText: {
-      fontFamily: theme.fonts.titleLarge.fontFamily,
-      fontSize: theme.fonts.titleLarge.fontSize,
-      fontWeight: theme.fonts.titleLarge.fontWeight,
-      fontStyle: theme.fonts.titleLarge.fontStyle,
-      color: theme.colors.text,
-      textAlign: "center",
-    },
-    bodyText: {
-      fontFamily: theme.fonts.bodySmall.fontFamily,
-      fontSize: theme.fonts.bodySmall.fontSize,
-      fontWeight: theme.fonts.bodySmall.fontWeight,
-      fontStyle: theme.fonts.bodySmall.fontStyle,
-      color: theme.colors.text,
-      textAlign: "center",
-    },
-    loginButton: {
-      marginTop: 15,
-    },
-    forgotPassword: {
-      display: "flex",
-      justifyContent: "flex-end",
-      flexDirection: "row",
-      marginTop: 5,
-      marginRight: -9,
-    },
-  }), [theme])
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          backgroundColor: theme.colors.background,
+          flex: 1,
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+        },
+        content: {
+          display: "flex",
+          justifyContent: "space-between",
+        },
+        logInHeader: {
+          justifyContent: "center",
+          gap: 10,
+          marginBottom: 20,
+          marginTop: -15,
+        },
+        textInput: {
+          marginTop: 5,
+          backgroundColor: theme.colors.background,
+          color: theme.colors.text,
+        },
+        footer: {
+          display: "flex",
+          flexDirection: "row",
+          marginTop: 25,
+          justifyContent: "center",
+        },
+        signUp: {
+          color: theme.colors.custom.light,
+          fontFamily: theme.fonts.bodyMedium.fontFamily,
+          fontSize: theme.fonts.bodyMedium.fontSize,
+          fontWeight: theme.fonts.bodyMedium.fontWeight,
+          fontStyle: theme.fonts.bodyMedium.fontStyle,
+        },
+        login: {
+          marginTop: -1,
+          marginLeft: 3,
+        },
+        LogInText: {
+          fontFamily: theme.fonts.titleLarge.fontFamily,
+          fontSize: theme.fonts.titleLarge.fontSize,
+          fontWeight: theme.fonts.titleLarge.fontWeight,
+          fontStyle: theme.fonts.titleLarge.fontStyle,
+          color: theme.colors.text,
+          textAlign: "center",
+        },
+        bodyText: {
+          fontFamily: theme.fonts.bodySmall.fontFamily,
+          fontSize: theme.fonts.bodySmall.fontSize,
+          fontWeight: theme.fonts.bodySmall.fontWeight,
+          fontStyle: theme.fonts.bodySmall.fontStyle,
+          color: theme.colors.text,
+          textAlign: "center",
+        },
+        loginButton: {
+          marginTop: 15,
+        },
+        forgotPassword: {
+          display: "flex",
+          justifyContent: "flex-end",
+          flexDirection: "row",
+          marginTop: 5,
+          marginRight: -9,
+        },
+      }),
+    [theme],
+  );
 
   return (
     <SafeAreaView style={styles.container}>

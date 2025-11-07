@@ -10,7 +10,7 @@ const TabLayout = () => {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="boards"
         options={{
           tabBarLabel: "Boards",
           tabBarIcon: ({ focused, color, size }) => (
@@ -26,6 +26,8 @@ const TabLayout = () => {
         name="profile"
         options={{
           tabBarLabel: "Profile",
+          title: "Profile",
+          headerShown: true,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "person-circle" : "person-circle-outline"}

@@ -8,10 +8,12 @@ import { LogoutService } from "@/services/auth.service";
 import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "@/components/notificationBar";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/hooks/useUserContext";
 
 export default function ProfileScreen() {
   const theme = useAppTheme();
   const router = useRouter();
+  const { setIsLoggedIn } = useAuth();
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
@@ -24,7 +26,10 @@ export default function ProfileScreen() {
         message: "Bye!",
         messageType: "success",
       });
-      router.replace("/log-in");
+      setTimeout(() => {
+        setIsLoggedIn(false);
+        router.replace("/log-in");
+      }, 1200);
     },
     onError: (error) => {
       setNotification({
@@ -35,7 +40,7 @@ export default function ProfileScreen() {
   });
 
   const handleLogout = async () => {
-    await mutation.mutateAsync()
+    await mutation.mutateAsync();
   };
 
   // Styles object
@@ -51,6 +56,13 @@ export default function ProfileScreen() {
       justifyContent: "center",
       alignItems: "center",
     },
+    content: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    button: {
+      marginTop: 20,
+    },
   });
 
   return (
@@ -61,11 +73,11 @@ export default function ProfileScreen() {
           messageType={notification.messageType}
         />
       )}
-      <View>
-        <View style={styles.view}>
+      <View style={styles.content}>
+        <View>
           <Text>Profile Screen</Text>
         </View>
-        <View>
+        <View style={styles.button}>
           <Button mode="outlined" onPress={handleLogout}>
             Log out
           </Button>

@@ -2,7 +2,7 @@ import { Text, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "@/hooks/theme";
 
-export default function BoardScreen() {
+export default function ListsScreen() {
   const theme = useAppTheme();
 
   // Styles object
@@ -23,7 +23,7 @@ export default function BoardScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.view}>
-        <Text>Boards Screen</Text>
+        <Text>Lists Screen</Text>
       </View>
     </SafeAreaView>
   );

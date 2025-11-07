@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { useAppTheme } from "@/hooks/theme";
 import { NotificationBarType } from "@/types/sign-up.types";

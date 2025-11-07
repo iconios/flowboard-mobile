@@ -50,3 +50,16 @@ export const UserDataSchema = z.object({
 });
 
 export type UserDataType = z.infer<typeof UserDataSchema>;
+
+export const AuthContextValueSchema = z
+  .object({
+    isLoggedIn: z.boolean(),
+    setIsLoggedIn: z.function({
+      input: [z.boolean()],
+      output: z.void(),
+    }),
+    isInitializing: z.boolean(),
+  })
+  .or(z.null());
+
+export type AuthContextValueType = z.infer<typeof AuthContextValueSchema>;

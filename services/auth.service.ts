@@ -101,7 +101,6 @@ const LoginService = async (userLoginData: LoginFormType) => {
 
     // 3. Get the result from the server and store the user data
     const result: LoginServerResponseType = await response.json();
-
     if (!result.success || !response.ok) {
       throw new Error(result.message);
     }
@@ -242,11 +241,13 @@ const VerifyUserService = async (): Promise<boolean> => {
 const GetUserDataService = async (): Promise<UserDataType | null> => {
   try {
     // 1. Call the getCookie static method
-    const userData = await SecureCookieManager.getCookie("user");
+    const raw = await SecureCookieManager.getCookie("user");
+    if (!raw) return null;
 
     // 2. Return value to the caller
-    if (!userData) return null;
-    return userData;
+    const value = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+    return value as UserDataType;
   } catch (error) {
     console.error("Error getting user data", error);
     return null;

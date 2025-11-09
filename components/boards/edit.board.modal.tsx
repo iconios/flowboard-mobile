@@ -157,10 +157,9 @@ const EditBoardModal = ({
           justifyContent: "center",
         },
         container: {},
-        button: {
-          borderRadius: 0,
-          borderWidth: 1,
-          borderStyle: "solid",
+        primaryButton: {
+          paddingHorizontal: 4,
+          borderRadius: 1,
         },
       }),
     [theme, hsv],
@@ -254,8 +253,9 @@ const EditBoardModal = ({
                 <Button
                   disabled={mutation.isPending}
                   onPress={formik.submitForm}
+                  icon="file-edit"
                   mode="contained"
-                  style={styles.button}
+                  style={styles.primaryButton}
                 >
                   {mutation.isPending ? "Editing" : "Edit"}
                 </Button>
@@ -264,6 +264,7 @@ const EditBoardModal = ({
                     onClose();
                     formik.resetForm();
                   }}
+                  icon="cancel"
                 >
                   Cancel
                 </Button>

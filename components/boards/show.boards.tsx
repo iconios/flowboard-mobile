@@ -7,15 +7,28 @@ import NotificationBar from "../notificationBar";
 import { ActivityIndicator } from "react-native-paper";
 import { useAppTheme } from "@/hooks/theme";
 import SingleBoard from "./single.board";
+import { GetUserDataService } from "@/services/auth.service";
 
 const ShowBoards = () => {
   const theme = useAppTheme();
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const user = await GetUserDataService();
+      if (!user) return;
+      const { id } = user;
+      setUserId(id);
+    };
+    getUserId();
+  }, []);
   const { error, isPending, isError, data } = useQuery({
     queryKey: ["boards"],
     queryFn: async () => await GetBoardsService(),
+    enabled: !!userId,
   });
 
   useEffect(() => {
@@ -26,7 +39,7 @@ const ShowBoards = () => {
       });
     }
   }, [isError, error]);
-
+  console.log("User id", userId);
   const styles = useMemo(
     () =>
       StyleSheet.create({
@@ -91,6 +104,8 @@ const ShowBoards = () => {
             title={item.title}
             bgColor={item.bg_color}
             boardOwner={item.user.firstname}
+            ownerId={item.user._id}
+            userId={userId}
           />
         )}
         keyExtractor={(item) => item._id}

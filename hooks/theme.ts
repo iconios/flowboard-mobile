@@ -51,7 +51,7 @@ const fontConfig = {
     letterSpacing: 0,
   },
   headlineMedium: {
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Inter_600SemiBold",
     fontSize: 28,
     lineHeight: 36,
     letterSpacing: 0,

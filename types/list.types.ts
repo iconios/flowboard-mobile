@@ -44,7 +44,7 @@ export const CreateListInputSchema = z
     boardId: z.string(),
     title: z.string(),
     position: z.number(),
-    status: z.enum(["active", "archive"]),
+    status: z.string(),
   })
   .strict();
 
@@ -89,3 +89,13 @@ export const DeleteListServerResponseSchema = z.object({
 export type DeleteListServerResponseType = z.infer<
   typeof DeleteListServerResponseSchema
 >;
+
+export const UpdateListFormInputSchema = z
+  .object({
+    title: z.string(),
+    status: z.string(),
+    position: z.string(),
+  })
+  .strict();
+
+export type UpdateListFormInputType = z.infer<typeof UpdateListFormInputSchema>;

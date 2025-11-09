@@ -3,6 +3,9 @@ import { useAppTheme } from "@/hooks/theme";
 import { useMemo, useRef, useState } from "react";
 import { IconButton, Menu } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import UpdateListDialog from "./edit.list.modal";
+import { NotificationBarType } from "@/types/sign-up.types";
+import NotificationBar from "../notificationBar";
 
 const SingleList = ({
   id,
@@ -22,6 +25,10 @@ const SingleList = ({
   const [anchorPos, setAnchorPos] = useState<{ x: number; y: number } | null>(
     null,
   );
+  const [notification, setNotification] = useState<NotificationBarType | null>(
+    null,
+  );
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const lastOpenAt = useRef<number>(0);
   const iconRef = useRef<View>(null);
 
@@ -39,6 +46,22 @@ const SingleList = ({
   const handleDismiss = () => {
     if (Date.now() - lastOpenAt.current < 150) return;
     closeMenu();
+  };
+
+  const handleEditDialogSuccess = (message: string) => {
+    setNotification({
+      message: message,
+      messageType: "success",
+    });
+  };
+
+  const handleEditDialogOpen = () => {
+    setOpenEditDialog(true);
+    closeMenu();
+  };
+
+  const handleEditDialogDismiss = () => {
+    setOpenEditDialog(false);
   };
   // Styles object
   const styles = useMemo(
@@ -101,6 +124,12 @@ const SingleList = ({
   // Container for each list
   return (
     <View style={styles.container}>
+      {notification && (
+        <NotificationBar
+          message={notification.message}
+          messageType={notification.messageType}
+        />
+      )}
       {/* Header for each list */}
       <View style={styles.headingContainer}>
         {/* Header text */}
@@ -137,7 +166,7 @@ const SingleList = ({
             )}
             titleStyle={styles.menuItem}
             containerStyle={styles.menuDivider}
-            onPress={closeMenu}
+            onPress={handleEditDialogOpen}
           />
           <Menu.Item
             title="Delete"
@@ -149,6 +178,17 @@ const SingleList = ({
           />
         </Menu>
       </View>
+      {openEditDialog && (
+        <UpdateListDialog
+          dialogOpen={openEditDialog}
+          onClose={handleEditDialogDismiss}
+          listId={id}
+          onSuccess={handleEditDialogSuccess}
+          title={title}
+          status={status}
+          position={position}
+        />
+      )}
     </View>
   );
 };

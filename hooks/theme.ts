@@ -15,7 +15,7 @@ import {
 const colors = {
   bg: "#ffffff",
   text: "#0f172a", // slate-900
-  muted: "#475569", // slate-600
+  muted: "#E5E4E2", // slate-600
   border: "#e2e8f0", // slate-200
   primary: "#5C3BFF", // indigo-600
   primary700: "#4338ca", // indigo-700

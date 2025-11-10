@@ -2,7 +2,7 @@ import { GetBoardsService } from "@/services/boards.service";
 import { NotificationBarType } from "@/types/sign-up.types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import NotificationBar from "../notificationBar";
 import { ActivityIndicator } from "react-native-paper";
 import { useAppTheme } from "@/hooks/theme";
@@ -25,11 +25,16 @@ const ShowBoards = () => {
     };
     getUserId();
   }, []);
-  const { error, isPending, isError, data } = useQuery({
+  const { error, isPending, isError, data, refetch, isRefetching } = useQuery({
     queryKey: ["boards"],
     queryFn: async () => await GetBoardsService(),
     enabled: !!userId,
   });
+
+  // Query refetch or refresh handler
+  const handleRefresh = () => {
+    refetch();
+  };
 
   useEffect(() => {
     if (isError) {
@@ -116,6 +121,14 @@ const ShowBoards = () => {
           </View>
         }
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={handleRefresh}
+            colors={[theme.colors.accent]}
+            tintColor={theme.colors.accent}
+          />
+        }
       />
     </View>
   );

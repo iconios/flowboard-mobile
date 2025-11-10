@@ -1,26 +1,28 @@
-// Component to Delete List
+// Component to Delete Task
 /*
 #Plan
-1. Accept the list id
-2. Confirm that the user wants the list deleted
-3. Delete the list
+1. Accept the task id
+2. Confirm that the user wants the task deleted
+3. Delete the task
 */
 
+import { useAppTheme } from "@/hooks/theme";
 import { NotificationBarType } from "@/types/sign-up.types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { StyleSheet, Text } from "react-native";
-import { Button, Dialog, Portal } from "react-native-paper";
+import { Portal, Dialog, Button } from "react-native-paper";
 import NotificationBar from "../notificationBar";
-import { useAppTheme } from "@/hooks/theme";
-import { DeleteListService } from "@/services/list.service";
+import { DeleteTaskService } from "@/services/tasks.service";
 
-const DeleteListDialog = ({
-  id,
+const DeleteTaskDialog = ({
+  taskId,
   dialogOpen,
   onClose,
+  listId,
 }: {
-  id: string;
+  taskId: string;
+  listId: string;
   dialogOpen: boolean;
   onClose: () => void;
 }) => {
@@ -30,19 +32,19 @@ const DeleteListDialog = ({
   const theme = useAppTheme();
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ["delete-list"],
-    mutationFn: async (id: string) => await DeleteListService(id),
+    mutationKey: ["delete-task"],
+    mutationFn: async (id: string) => await DeleteTaskService(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["lists"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
       setNotification({
-        message: "List deleted successfully",
+        message: "Task deleted successfully",
         messageType: "success",
       });
       setTimeout(() => onClose(), 1200);
     },
     onError: (error) => {
       setNotification({
-        message: error.message || "Failed to delete list",
+        message: error.message || "Failed to delete task",
         messageType: "error",
       });
     },
@@ -74,17 +76,17 @@ const DeleteListDialog = ({
         />
       )}
       <Dialog visible={dialogOpen} onDismiss={onClose} style={styles.container}>
-        <Dialog.Title style={styles.titleText}>Delete List</Dialog.Title>
+        <Dialog.Title style={styles.titleText}>Delete Task</Dialog.Title>
         <Dialog.Content>
           <Text>
-            Deleting the List will also delete its tasks, and comments. Are you
-            sure you want to delete the list?
+            Deleting the Task will also delete its comments. Are you sure you
+            want to delete the task?
           </Text>
         </Dialog.Content>
         <Dialog.Actions style={styles.actions}>
           <Button
             icon="delete"
-            onPress={async () => await mutation.mutateAsync(id)}
+            onPress={async () => await mutation.mutateAsync(taskId)}
             disabled={mutation.isPending}
           >
             Proceed
@@ -103,4 +105,4 @@ const DeleteListDialog = ({
   );
 };
 
-export default DeleteListDialog;
+export default DeleteTaskDialog;

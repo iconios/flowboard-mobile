@@ -24,9 +24,13 @@ const ShowLists = ({
 
   // Get the Lists for Board
   const query = useQuery({
-    queryKey: ["lists"],
+    queryKey: ["lists", boardId],
     queryFn: () => GetListsService(boardId),
     enabled: !!boardId,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
+    gcTime: 5 * 60 * 1000,
+    staleTime: 30_000,
   });
 
   // Query refetch or refresh handler

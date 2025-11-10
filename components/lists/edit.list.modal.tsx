@@ -63,7 +63,7 @@ const UpdateListDialog = ({
   };
 
   const mutation = useMutation({
-    mutationKey: ["create-list", listId],
+    mutationKey: ["update-list", listId],
     mutationFn: async (values: {
       title: string;
       position: number;
@@ -73,12 +73,12 @@ const UpdateListDialog = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lists"] });
       formik.resetForm();
-      onSuccess("List created successfully");
+      onSuccess("List updated successfully");
       onClose();
     },
     onError: (error) => {
       setNotification({
-        message: error.message || "Failed to create list",
+        message: error.message || "Failed to update list",
         messageType: "error",
       });
     },
@@ -191,7 +191,7 @@ const UpdateListDialog = ({
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             {/* Title */}
-            <Text style={styles.titleText}>Create a List</Text>
+            <Text style={styles.titleText}>Update a List</Text>
 
             {/* Form Content */}
             <View>
@@ -301,7 +301,7 @@ const UpdateListDialog = ({
                 style={styles.primaryButton}
                 disabled={mutation.isPending}
               >
-                {mutation.isPending ? "Editing" : "Edit"}
+                {mutation.isPending ? "Updating" : "Update"}
               </Button>
               <Button icon="cancel" onPress={onClose}>
                 Cancel

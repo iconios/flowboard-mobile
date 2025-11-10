@@ -238,8 +238,13 @@ const CreateListDialog = ({
                   value={formik.values.status}
                   showSoftInputOnFocus={false}
                   caretHidden={true}
-                  onPressIn={() => setStatusModal(true)}
-                  right={<TextInput.Icon icon="chevron-down" />}
+                  onPress={() => setStatusModal(true)}
+                  right={
+                    <TextInput.Icon
+                      icon="chevron-down"
+                      onPress={() => setStatusModal(true)}
+                    />
+                  }
                 />
 
                 {/* Status Selection Modal */}

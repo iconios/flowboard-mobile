@@ -1,14 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "@/hooks/theme";
 import { useMemo, useRef, useState } from "react";
-import { FAB, IconButton, Menu } from "react-native-paper";
+import { IconButton, Menu } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import UpdateListDialog from "./edit.list.modal";
 import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "../notificationBar";
 import DeleteListDialog from "./delete.list.dialog";
 import ShowTasks from "../tasks/show.tasks";
-import CreateTaskDialog from "../tasks/create.task.modal";
 
 const SingleList = ({
   id,
@@ -31,7 +30,6 @@ const SingleList = ({
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
-  const [openCreateTaskDialog, setOpenCreateTaskDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const lastOpenAt = useRef<number>(0);
@@ -53,7 +51,7 @@ const SingleList = ({
     closeMenu();
   };
 
-  const handleDialogSuccess = (message: string) => {
+  const handleEditDialogSuccess = (message: string) => {
     setNotification({
       message: message,
       messageType: "success",
@@ -132,12 +130,6 @@ const SingleList = ({
           backgroundColor: theme.colors.custom.muted,
           flex: 1,
         },
-        fab: {
-          position: "absolute",
-          margin: 16,
-          right: 0,
-          bottom: 10,
-        },
       }),
     [theme, bgColor],
   );
@@ -177,7 +169,7 @@ const SingleList = ({
           contentStyle={styles.menuContainer}
         >
           <Menu.Item
-            title="Update List"
+            title="Update"
             leadingIcon={() => (
               <MaterialCommunityIcons
                 name="file-edit"
@@ -190,7 +182,7 @@ const SingleList = ({
             onPress={handleEditDialogOpen}
           />
           <Menu.Item
-            title="Delete List"
+            title="Delete"
             leadingIcon={() => (
               <MaterialCommunityIcons name="delete" size={24} color={bgColor} />
             )}
@@ -203,7 +195,7 @@ const SingleList = ({
             dialogOpen={openEditDialog}
             onClose={handleEditDialogDismiss}
             listId={id}
-            onSuccess={handleDialogSuccess}
+            onSuccess={handleEditDialogSuccess}
             title={title}
             status={status}
             position={position}
@@ -221,25 +213,7 @@ const SingleList = ({
       {/* Tasks Containter */}
       <View style={styles.tasksContainer}>
         <ShowTasks listId={id} />
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          label="Add New Task"
-          accessibilityLabel="Floating Action Button for Adding New Task"
-          animated
-          color={bgColor}
-          size="large"
-          onPress={() => setOpenCreateTaskDialog(true)}
-        />
       </View>
-      {openCreateTaskDialog && (
-        <CreateTaskDialog
-          dialogOpen={openCreateTaskDialog}
-          onClose={() => setOpenCreateTaskDialog(false)}
-          listId={id}
-          onSuccess={handleDialogSuccess}
-        />
-      )}
     </View>
   );
 };

@@ -1,7 +1,9 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppTheme } from "@/hooks/theme";
 
 const TabLayout = () => {
+  const theme = useAppTheme();
   return (
     <Tabs
       screenOptions={{
@@ -20,6 +22,7 @@ const TabLayout = () => {
               color={color}
             />
           ),
+          tabBarActiveTintColor: theme.colors.primary,
         }}
       />
       <Tabs.Screen
@@ -35,6 +38,7 @@ const TabLayout = () => {
               color={color}
             />
           ),
+          tabBarActiveTintColor: theme.colors.primary,
         }}
       />
     </Tabs>

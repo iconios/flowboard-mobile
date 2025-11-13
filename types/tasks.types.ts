@@ -31,6 +31,7 @@ export const GetTaskSchema = z.object({
 });
 
 export type GetTaskType = z.infer<typeof GetTaskSchema>;
+export type ShowSingleTaskType = z.infer<typeof GetTaskSchema>;
 
 export const DeleteTaskServerResponseSchema = z.object({
   success: z.boolean(),
@@ -86,3 +87,20 @@ export const CreateTaskFormInputSchema = CreateTaskInputSchema.omit({
   .strict();
 
 export type CreateTaskFormInputType = z.infer<typeof CreateTaskFormInputSchema>;
+
+export const UpdateTaskFormInputSchema = z.object({
+  taskId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  dueDate: z.string(),
+  priority: z.string(),
+  position: z.string(),
+});
+
+export type UpdateTaskFormInputType = z.infer<typeof UpdateTaskFormInputSchema>;
+
+export const UpdateTaskUISchema = UpdateTaskFormInputSchema.omit({
+  taskId: true,
+});
+
+export type UpdateTaskUIType = z.infer<typeof UpdateTaskUISchema>;

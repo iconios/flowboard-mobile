@@ -74,12 +74,9 @@ const SingleTask = ({
           ...theme.fonts.headlineSmall,
         },
         actions: {
-          flexShrink: 1,
           marginTop: -10,
         },
-        textView: {
-          flexGrow: 1,
-        },
+        textView: {},
       }),
     [theme],
   );

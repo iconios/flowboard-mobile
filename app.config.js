@@ -6,16 +6,13 @@ const API_URLS = {
 
 // Determine current environment
 const getEnvironment = () => {
-  if (__DEV__) return "development";
-  if (process.env.APP_VARIANT === "staging") return "staging";
-  if (process.env.APP_VARIANT === "production") return "production";
-  return "production";
+  const fromProfile = process.env.EAS_BUILD_PROFILE;
+  const fromVariant = process.env.APP_VARIANT;
+  return fromVariant || fromProfile || "development";
 };
 
 const currentEnv = getEnvironment();
-if (!API_URLS[currentEnv]) {
-  console.warn(`No API URL configured for environment: ${currentEnv}`);
-}
+const API_BASE_URL = API_URLS[currentEnv] || API_URLS.production;
 
 export default {
   name: "FlowBoard",
@@ -27,9 +24,24 @@ export default {
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
+    bundleIdentifier: "ng.nerdywebconsults.flowboard",
+    buildNumber: "1.0.0",
     supportsTablet: true,
+
+    // ATS: allow non-HTTPS only for dev LAN calls
+    infoPlist:
+      currentEnv === "development"
+        ? {
+            NSAppTransportSecurity: {
+              NSAllowsArbitraryLoads: true,
+            },
+          }
+        : {},
   },
   android: {
+    package: "ng.nerdywebconsults.flowboard",
+    versionCode: 1,
+    usesCleartextTraffic: currentEnv === "development",
     adaptiveIcon: {
       backgroundColor: "#E6F4FE",
       foregroundImage: "./assets/images/android-icon-foreground.png",
@@ -59,7 +71,9 @@ export default {
     reactCompiler: true,
   },
   extra: {
-    API_BASE_URL: API_URLS[currentEnv],
+    API_BASE_URL,
     ENVIRONMENT: currentEnv,
+    EAS_BUILD_PROFILE: process.env.EAS_BUILD_PROFILE,
+    APP_VARIANT: process.env.APP_VARIANT,
   },
 };

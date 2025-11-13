@@ -12,6 +12,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  Keyboard,
 } from "react-native";
 import { HelperText, TextInput, Button } from "react-native-paper";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -161,7 +162,7 @@ const LoginScreen = () => {
           <Text style={styles.bodyText}>Sign up or Log into your account</Text>
         </View>
         <KeyboardAvoidingView behavior="padding">
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps="handled">
             <TextInput
               id="email"
               label="Email"
@@ -196,7 +197,9 @@ const LoginScreen = () => {
               right={
                 <TextInput.Icon
                   icon={isPasswordVisible ? "eye-off" : "eye"}
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                  onPress={() => {
+                    setIsPasswordVisible(!isPasswordVisible);
+                  }}
                 />
               }
             />
@@ -222,7 +225,10 @@ const LoginScreen = () => {
               contentStyle={{ height: 50 }}
               labelStyle={styles.signUp}
               mode="contained"
-              onPress={() => formik.handleSubmit()}
+              onPress={() => {
+                Keyboard.dismiss();
+                formik.handleSubmit();
+              }}
               disabled={formik.isSubmitting || mutation.isPending}
               style={styles.loginButton}
             >

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "@/hooks/theme";
 import { useMemo, useRef, useState } from "react";
 import { FAB, IconButton, Menu } from "react-native-paper";
@@ -99,7 +99,7 @@ const SingleList = ({
           flexGrow: 1,
         },
         contentView: {
-          height: 460,
+          height: Platform.OS === "ios" ? 460 : 400,
         },
         headingContainer: {
           display: "flex",
@@ -136,7 +136,7 @@ const SingleList = ({
           position: "absolute",
           margin: 16,
           right: 0,
-          bottom: 10,
+          bottom: Platform.OS === "ios" ? 10 : 50,
         },
       }),
     [theme, bgColor],

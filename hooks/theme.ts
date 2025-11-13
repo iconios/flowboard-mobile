@@ -14,14 +14,16 @@ import {
 // Define color palette
 const colors = {
   bg: "#ffffff",
-  text: "#0f172a", // slate-900
+  text: "#0F172A", // slate-900
   muted: "#E5E4E2", // slate-600
   border: "#e2e8f0", // slate-200
   primary: "#5C3BFF", // indigo-600
   primary700: "#4338ca", // indigo-700
-  accent: "#2F2FEA", // violet-600
+  accent: "#FF6D00", // violet-600
   success: "#059669", // emerald-600
   light: "#f8fafc", // slate-50,
+  secondary: "#28C4A9",
+  secondaryText: "#000000",
 };
 
 // Complete MD3 font configuration
@@ -45,13 +47,13 @@ const fontConfig = {
     letterSpacing: 0,
   },
   headlineLarge: {
-    fontFamily: "Inter_400Regular",
+    fontFamily: "Inter_800ExtraBold",
     fontSize: 32,
     lineHeight: 40,
     letterSpacing: 0,
   },
   headlineMedium: {
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Inter_700Bold",
     fontSize: 28,
     lineHeight: 36,
     letterSpacing: 0,
@@ -128,8 +130,9 @@ export const appTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    // Primary colors
+    // Main colors
     primary: colors.primary,
+    secondary: colors.secondary,
     accent: colors.accent,
 
     // Background colors
@@ -139,6 +142,7 @@ export const appTheme = {
 
     // Text colors
     text: colors.text,
+    secondaryText: colors.secondaryText,
     onSurface: colors.text,
     onBackground: colors.text,
 

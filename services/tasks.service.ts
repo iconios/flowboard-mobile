@@ -104,11 +104,11 @@ const DeleteTaskService = async (
       message: `${result.message}`,
     };
   } catch (error) {
-    console.error("Error deleting list", error);
+    console.error("Error deleting task", error);
 
     if (error instanceof Error) throw error;
 
-    throw new Error("Error deleting list");
+    throw new Error("Error deleting task");
   }
 };
 
@@ -145,7 +145,7 @@ const CreateTaskService = async (createTaskData: CreateTaskInputType) => {
 
     return result.task;
   } catch (error) {
-    console.error("Error creating list", error);
+    console.error("Error creating task", error);
 
     if (error instanceof ZodError)
       throw new Error("Error validating task data");
@@ -169,7 +169,7 @@ const UpdateTaskService = async (updateTaskData: UpdateTaskInputType) => {
   }
   try {
     const token = await getAuthToken();
-
+    console.log("Update data", updateTaskData);
     const { taskId, ...updateData } =
       UpdateTaskInputSchema.parse(updateTaskData);
     const response = await fetch(`${API_BASE_URL}/task/${taskId}`, {

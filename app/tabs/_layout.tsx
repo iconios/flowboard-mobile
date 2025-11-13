@@ -9,6 +9,9 @@ const TabLayout = () => {
       screenOptions={{
         tabBarLabelPosition: "below-icon",
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: theme.colors.primary,
+        },
       }}
     >
       <Tabs.Screen
@@ -22,7 +25,7 @@ const TabLayout = () => {
               color={color}
             />
           ),
-          tabBarActiveTintColor: theme.colors.primary,
+          tabBarActiveTintColor: theme.colors.background,
         }}
       />
       <Tabs.Screen
@@ -38,7 +41,7 @@ const TabLayout = () => {
               color={color}
             />
           ),
-          tabBarActiveTintColor: theme.colors.primary,
+          tabBarActiveTintColor: theme.colors.background,
         }}
       />
     </Tabs>

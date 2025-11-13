@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  useColorScheme,
 } from "react-native";
 import { Button, HelperText, TextInput, Text } from "react-native-paper";
 import { FormikHelpers, useFormik } from "formik";
@@ -22,7 +23,9 @@ import {
   CreateTaskFormInputSchema,
   CreateTaskFormInputType,
 } from "@/types/tasks.types";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
 
 const CreateTaskDialog = ({
   dialogOpen,
@@ -42,9 +45,17 @@ const CreateTaskDialog = ({
     null,
   );
   const [showPicker, setShowPicker] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   // Date handling functions
-  const openDatePicker = () => setShowPicker(true);
+  const openDatePicker = () => {
+    if (Platform.OS === "ios") {
+      setShowPicker(true);
+    } else {
+      openAndroidDateTimePicker();
+    }
+  };
   const closeDatePicker = () => setShowPicker(false);
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
@@ -54,10 +65,6 @@ const CreateTaskDialog = ({
 
     if (selectedDate) {
       formik.setFieldValue("dueDate", selectedDate.toISOString());
-    }
-
-    if (Platform.OS === "android" && event.type === "dismissed") {
-      setShowPicker(false);
     }
   };
 
@@ -81,6 +88,40 @@ const CreateTaskDialog = ({
       console.error("Error getting current date", error);
       return new Date();
     }
+  };
+
+  // Android DateTimePicker Helper function
+  const openAndroidDateTimePicker = () => {
+    const current = getCurrentDateValue();
+
+    DateTimePickerAndroid.open({
+      value: current,
+      mode: "date",
+      onChange: (dateEvent, selectedDate) => {
+        // User pressed "Cancel"
+        if (dateEvent.type !== "set" || !selectedDate) return;
+
+        // Then open Time
+        DateTimePickerAndroid.open({
+          value: selectedDate,
+          mode: "time",
+          is24Hour: true,
+          onChange: (timeEvent, selectedTime) => {
+            // User pressed "Cancel"
+            if (timeEvent.type !== "set" || !selectedTime) return;
+
+            const final = new Date(selectedDate);
+            final.setHours(
+              selectedTime.getHours(),
+              selectedTime.getMinutes(),
+              0,
+              0,
+            );
+            formik.setFieldValue("dueDate", final.toISOString());
+          },
+        });
+      },
+    });
   };
 
   const options = [
@@ -230,7 +271,7 @@ const CreateTaskDialog = ({
           backgroundColor: "rgba(0,0,0,0.5)",
         },
         dateModalContent: {
-          backgroundColor: "white",
+          backgroundColor: isDark ? "#1C1C1E" : "white",
           borderTopEndRadius: 20,
           borderTopStartRadius: 20,
           padding: 20,
@@ -259,7 +300,7 @@ const CreateTaskDialog = ({
           backgroundColor: "white",
         },
       }),
-    [theme],
+    [theme, isDark],
   );
 
   return (
@@ -392,12 +433,20 @@ const CreateTaskDialog = ({
                       transparent={true}
                       animationType="slide"
                       onRequestClose={closeDatePicker}
+                      presentationStyle="overFullScreen"
                     >
                       <View style={styles.dateModalOverlay}>
                         <View style={styles.dateModalContent}>
                           <View style={styles.dateView}>
                             <Button onPress={closeDatePicker}>Cancel</Button>
-                            <Text>Select Date & Time</Text>
+                            <Text
+                              style={[
+                                styles.titleText,
+                                { color: isDark ? "white" : "black" },
+                              ]}
+                            >
+                              Select Date & Time
+                            </Text>
                             <Button onPress={closeDatePicker}>Done</Button>
                           </View>
                           <View style={styles.datePickerContainer}>
@@ -407,18 +456,15 @@ const CreateTaskDialog = ({
                               onChange={handleDateChange}
                               value={getCurrentDateValue()}
                               style={styles.dateTimePicker}
+                              themeVariant={isDark ? "dark" : "light"}
+                              textColor={isDark ? "#FFFFFF" : "#000000"}
                             />
                           </View>
                         </View>
                       </View>
                     </Modal>
                   ) : (
-                    <DateTimePicker
-                      value={getCurrentDateValue()}
-                      mode="datetime"
-                      display="default"
-                      onChange={handleDateChange}
-                    />
+                    <></>
                   ))}
 
                 {/* Priority Selector */}

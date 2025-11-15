@@ -402,6 +402,9 @@ const ShowSingleTask = ({
           justifyContent: "flex-end",
           flexDirection: "row",
         },
+        formContent: {
+          minWidth: "100%"
+        }
       }),
     [theme, isDark],
   );
@@ -418,9 +421,12 @@ const ShowSingleTask = ({
         behavior="padding"
         keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 120}
       >
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {/* Form Content */}
-          <View>
+          <View style={styles.formContent}>
             <TextInput
               id="title"
               value={formik.values.title}
@@ -437,7 +443,13 @@ const ShowSingleTask = ({
               outlineStyle={{ borderWidth: 1 }}
               style={styles.descriptionText}
               mode="outlined"
-              right={<TextInput.Icon icon="pencil" size={18} color={theme.colors.text} />}
+              right={
+                <TextInput.Icon
+                  icon="pencil"
+                  size={18}
+                  color={theme.colors.text}
+                />
+              }
             />
             {formik.touched.title && !!formik.errors.title && (
               <HelperText
@@ -486,7 +498,13 @@ const ShowSingleTask = ({
                 styles.textInputContent,
               ]}
               outlineStyle={{ borderWidth: 0 }}
-              right={<TextInput.Icon icon="pencil" size={18} color={theme.colors.text} />}
+              right={
+                <TextInput.Icon
+                  icon="pencil"
+                  size={18}
+                  color={theme.colors.text}
+                />
+              }
             />
             {formik.touched.description && !!formik.errors.description && (
               <HelperText
@@ -528,7 +546,13 @@ const ShowSingleTask = ({
               contentStyle={styles.textInputContent}
               keyboardType="numeric"
               mode="outlined"
-              right={<TextInput.Icon icon="pencil" size={18} color={theme.colors.text} />}
+              right={
+                <TextInput.Icon
+                  icon="pencil"
+                  size={18}
+                  color={theme.colors.text}
+                />
+              }
             />
             {formik.touched.position && !!formik.errors.position && (
               <HelperText

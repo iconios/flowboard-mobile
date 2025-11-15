@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "@/hooks/theme";
 import { IconButton } from "react-native-paper";
 import DeleteCommentDialog from "./delete.comment.dialog";
+import UpdateCommentModal from "./update.comment.modal";
 
 const SingleComment = ({
   id,
@@ -11,9 +12,10 @@ const SingleComment = ({
   createdAt,
   updatedAt,
   taskId,
-}: GetCommentType & {taskId: string;}) => {
+}: GetCommentType & { taskId: string }) => {
   const theme = useAppTheme();
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
   const created = createdAt.split("T", 1);
   const updated = updatedAt.split("T", 1);
   // Styles object
@@ -55,12 +57,20 @@ const SingleComment = ({
       <Text style={styles.contentText}>{content}</Text>
       <View style={styles.actionsAndMeta}>
         <View style={styles.actions}>
-          <IconButton icon="pencil" iconColor={theme.colors.text} />
-          <IconButton icon="delete" onPress={() => setDeleteDialog(true)} iconColor={theme.colors.text} />
+          <IconButton
+            icon="pencil"
+            iconColor={theme.colors.text}
+            onPress={() => setUpdateModal(true)}
+          />
+          <IconButton
+            icon="delete"
+            onPress={() => setDeleteDialog(true)}
+            iconColor={theme.colors.text}
+          />
         </View>
         <View style={styles.metaDataView}>
-          <Text style={styles.metaData}>Created: {created}</Text>
           <Text style={styles.metaData}>Updated: {updated}</Text>
+          <Text style={styles.metaData}>Created: {created}</Text>
         </View>
       </View>
       {deleteDialog && (
@@ -69,6 +79,15 @@ const SingleComment = ({
           taskId={taskId}
           dialogOpen={deleteDialog}
           onClose={() => setDeleteDialog(false)}
+        />
+      )}
+      {updateModal && (
+        <UpdateCommentModal
+          commentId={id}
+          content={content}
+          modalOpen={updateModal}
+          taskId={taskId}
+          onClose={() => setUpdateModal(false)}
         />
       )}
     </View>

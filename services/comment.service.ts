@@ -13,6 +13,9 @@ import {
   DeleteCommentServerResponseType,
   GetCommentsServerResponseType,
   GetCommentType,
+  UpdateCommentInputSchema,
+  UpdateCommentInputType,
+  UpdateCommentServerResponseType,
 } from "@/types/comments.types";
 import { GetUserDataService } from "./auth.service";
 import { ZodError } from "zod";
@@ -155,4 +158,55 @@ const DeleteCommentService = async (
   }
 };
 
-export { GetCommentsService, CreateCommentService, DeleteCommentService };
+// Update Comment Service
+/*
+#Plan:
+1. Get the task id and pass it to the API
+2. Send response to client
+*/
+const UpdateCommentService = async (
+  updateCommentData: UpdateCommentInputType,
+) => {
+  // 1. Get the board id and pass it to the API
+  if (!API_BASE_URL) {
+    throw new Error("Server Url is required");
+  }
+  try {
+    const token = await getAuthToken();
+    console.log("Update data", updateCommentData);
+    const { commentId, ...updateData } =
+      UpdateCommentInputSchema.parse(updateCommentData);
+    const response = await fetch(`${API_BASE_URL}/comment/${commentId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    // 2. Send response to client
+    const result: UpdateCommentServerResponseType = await response.json();
+    if (!result.success) {
+      throw new Error(`${result.message}`);
+    }
+
+    return result.comment;
+  } catch (error) {
+    console.error("Error updating comment", error);
+
+    if (error instanceof ZodError)
+      throw new Error("Error validating comment data");
+
+    if (error instanceof Error) throw error;
+
+    throw new Error("Error updating comment");
+  }
+};
+
+export {
+  GetCommentsService,
+  CreateCommentService,
+  DeleteCommentService,
+  UpdateCommentService,
+};

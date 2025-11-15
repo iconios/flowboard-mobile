@@ -109,7 +109,9 @@ const CreateCommentModal = ({
           error={formik.touched.content && Boolean(formik.errors.content)}
           autoCapitalize="sentences"
           style={styles.textInput}
+          multiline
           mode="outlined"
+          contentStyle={{textAlignVertical: "center"}}
         />
         {formik.touched.content && !!formik.errors.content && (
           <HelperText

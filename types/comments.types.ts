@@ -5,6 +5,8 @@ export const GetCommentSchema = z.object({
   content: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  userId: z.string(),
+  taskId: z.string(),
 });
 
 export type GetCommentType = z.infer<typeof GetCommentSchema>;
@@ -18,6 +20,8 @@ export const GetCommentsServerResponseSchema = z.object({
       content: z.string(),
       createdAt: z.string(),
       updatedAt: z.string(),
+      userId: z.string(),
+      taskId: z.string(),
     }),
   ),
   count: z.number(),

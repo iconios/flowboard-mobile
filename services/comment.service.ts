@@ -167,7 +167,7 @@ const DeleteCommentService = async (
 const UpdateCommentService = async (
   updateCommentData: UpdateCommentInputType,
 ) => {
-  // 1. Get the board id and pass it to the API
+  // 1. Get the task id and pass it to the API
   if (!API_BASE_URL) {
     throw new Error("Server Url is required");
   }

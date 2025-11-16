@@ -1,10 +1,11 @@
 import { GetCommentType } from "@/types/comments.types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useAppTheme } from "@/hooks/theme";
 import { IconButton } from "react-native-paper";
 import DeleteCommentDialog from "./delete.comment.dialog";
 import UpdateCommentModal from "./update.comment.modal";
+import { GetUserDataService } from "@/services/auth.service";
 
 const SingleComment = ({
   id,
@@ -12,12 +13,26 @@ const SingleComment = ({
   createdAt,
   updatedAt,
   taskId,
-}: GetCommentType & { taskId: string }) => {
+  userId,
+}: GetCommentType) => {
   const theme = useAppTheme();
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [loggedInUserId, setLoggedInUserId] = useState("");
   const created = createdAt.split("T", 1);
   const updated = updatedAt.split("T", 1);
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const userData = await GetUserDataService();
+      if (!userData?.id) return;
+      setLoggedInUserId(userData.id);
+    };
+    getUserId();
+  }, []);
+  console.log("Logged-in user", loggedInUserId);
+  console.log("Comment owner id", userId);
+
   // Styles object
   const styles = useMemo(
     () =>
@@ -61,11 +76,13 @@ const SingleComment = ({
             icon="pencil"
             iconColor={theme.colors.text}
             onPress={() => setUpdateModal(true)}
+            disabled={loggedInUserId !== userId}
           />
           <IconButton
             icon="delete"
             onPress={() => setDeleteDialog(true)}
             iconColor={theme.colors.text}
+            disabled={loggedInUserId !== userId}
           />
         </View>
         <View style={styles.metaDataView}>

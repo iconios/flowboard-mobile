@@ -1,16 +1,22 @@
-import { GetCommentsService } from "@/services/comment.service";
+import { GetBoardMembersService } from "@/services/board.members.service";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { useAppTheme } from "@/hooks/theme";
-import SingleComment from "./single.comment";
+import SingleMember from "./single.member";
 
-const ShowComments = ({ taskId }: { taskId: string }) => {
+const ShowBoardMembers = ({ boardId }: { boardId: string }) => {
   const theme = useAppTheme();
   const query = useQuery({
-    queryKey: ["comments", taskId],
-    queryFn: async () => await GetCommentsService(taskId),
-    enabled: !!taskId,
+    queryKey: ["members", boardId],
+    queryFn: async ({ signal }) =>
+      await GetBoardMembersService(boardId, { signal }),
+    enabled: !!boardId,
     refetchOnMount: "always",
     refetchOnWindowFocus: false,
     staleTime: 30_000,
@@ -22,7 +28,7 @@ const ShowComments = ({ taskId }: { taskId: string }) => {
     query.refetch();
   };
 
-  const comments = query.data ?? [];
+  const members = query.data ?? [];
 
   // Styles object
   const styles = useMemo(
@@ -53,7 +59,27 @@ const ShowComments = ({ taskId }: { taskId: string }) => {
           marginTop: 16,
         },
         emptyWrap: {
-          paddingBottom: 16,
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 48,
+          paddingHorizontal: 16,
+        },
+        emptyText: {
+          textAlign: "center",
+          opacity: 0.7,
+          ...theme.fonts.bodyMedium,
+        },
+        separator: { height: 8 },
+        footerSpacer: {
+          height: 8,
+        },
+        container: {
+          flex: 1,
+          minHeight: 300,
+          backgroundColor: theme.colors.background,
+          marginTop: 8,
+          paddingHorizontal: 10,
         },
       }),
     [theme],
@@ -63,7 +89,7 @@ const ShowComments = ({ taskId }: { taskId: string }) => {
     return (
       <View style={styles.loadingView}>
         <ActivityIndicator />
-        <Text style={styles.loadingText}>Loading comments...</Text>
+        <Text style={styles.loadingText}>Loading members...</Text>
       </View>
     );
   }
@@ -82,28 +108,24 @@ const ShowComments = ({ taskId }: { taskId: string }) => {
       </View>
     );
   }
-
   return (
-    <View>
-      {comments.length === 0 ? (
-        <Text style={styles.emptyWrap}>
-          You have not created any comments for this task
-        </Text>
-      ) : (
-        comments?.map((item) => (
-          <SingleComment
-            id={item.id}
-            content={item.content}
-            createdAt={item.createdAt}
-            updatedAt={item.updatedAt}
-            key={item.id}
-            taskId={taskId}
-            userId={item.userId}
-          />
+    <View style={styles.container}>
+      {members.length > 0 ? (
+        members.map((member) => (
+          <SingleMember member={member} key={member.memberId} />
         ))
+      ) : (
+        <View style={styles.emptyWrap}>
+          <Text style={styles.emptyText}>
+            You have not invited any members to this board.
+          </Text>
+          <Text style={styles.refreshText} onPress={handleRefresh}>
+            Tap to refresh
+          </Text>
+        </View>
       )}
     </View>
   );
 };
 
-export default ShowComments;
+export default ShowBoardMembers;

@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "@/hooks/theme";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ShowLists from "@/components/lists/show.lists";
 import { Button } from "react-native-paper";
 import { useState } from "react";
@@ -11,11 +11,14 @@ import NotificationBar from "@/components/notificationBar";
 
 export default function ListsScreen() {
   const theme = useAppTheme();
+  const router = useRouter();
   const { boardId, title, bgColor } = useLocalSearchParams();
   const [openDialog, setOpenDialog] = useState(false);
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const stringBoardId = boardId as string;
+  const stringTitle = title as string;
 
   const handleCreateListSuccess = (message: string) => {
     setNotification({
@@ -32,10 +35,11 @@ export default function ListsScreen() {
       paddingHorizontal: 20,
       paddingTop: -30,
     },
-    view: {
-      // flex: 1,
-      // justifyContent: "center",
-      // alignItems: "center",
+    actions: {
+      display: "flex",
+      justifyContent: "space-between",
+      flexDirection: "row",
+      gap: 4,
     },
     titleText: {
       ...theme.fonts.headlineMedium,
@@ -61,17 +65,36 @@ export default function ListsScreen() {
           messageType={notification.messageType}
         />
       )}
-      <View style={styles.view}>
+      <View>
         <Text style={styles.titleText}>{title}</Text>
-        <Button
-          icon="shape-square-plus"
-          mode="elevated"
-          style={styles.button}
-          labelStyle={styles.buttonText}
-          onPress={() => setOpenDialog(true)}
-        >
-          Add New List
-        </Button>
+        <View style={styles.actions}>
+          <Button
+            icon="shape-square-plus"
+            mode="elevated"
+            style={styles.button}
+            labelStyle={styles.buttonText}
+            onPress={() => setOpenDialog(true)}
+          >
+            Add New List
+          </Button>
+          <Button
+            mode="elevated"
+            icon="account-plus"
+            style={styles.button}
+            labelStyle={styles.buttonText}
+            onPress={() =>
+              router.push({
+                pathname: "/tabs/boards/member/[boardId]",
+                params: {
+                  boardId: stringBoardId,
+                  title: stringTitle,
+                },
+              })
+            }
+          >
+            Members
+          </Button>
+        </View>
         <ShowLists boardId={boardId as string} bgColor={bgColor as string} />
       </View>
       {openDialog && (

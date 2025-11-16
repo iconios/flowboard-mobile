@@ -403,8 +403,8 @@ const ShowSingleTask = ({
           flexDirection: "row",
         },
         formContent: {
-          minWidth: "100%"
-        }
+          minWidth: "100%",
+        },
       }),
     [theme, isDark],
   );

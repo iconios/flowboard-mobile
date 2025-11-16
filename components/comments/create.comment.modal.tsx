@@ -111,7 +111,7 @@ const CreateCommentModal = ({
           style={styles.textInput}
           multiline
           mode="outlined"
-          contentStyle={{textAlignVertical: "center"}}
+          contentStyle={{ textAlignVertical: "center" }}
         />
         {formik.touched.content && !!formik.errors.content && (
           <HelperText

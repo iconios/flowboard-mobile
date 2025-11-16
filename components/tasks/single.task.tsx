@@ -69,12 +69,17 @@ const SingleTask = ({
           display: "flex",
           justifyContent: "space-between",
           flexDirection: "row",
+          alignItems: "flex-start",
         },
         titleText: {
           ...theme.fonts.headlineSmall,
+          flex: 1,
+          flexWrap: "wrap",
+          marginRight: 8,
         },
         actions: {
           marginTop: -10,
+          flexShrink: 0,
         },
         textView: {},
       }),
@@ -85,21 +90,21 @@ const SingleTask = ({
   return (
     <Pressable onPress={goToTask}>
       <View style={styles.container}>
-        <View style={styles.textView}>
-          <Text style={styles.titleText}>{title}</Text>
-        </View>
+        <Text style={styles.titleText} numberOfLines={10}>
+          {title}
+        </Text>
         <View style={styles.actions}>
           <IconButton icon="delete" onPress={handleDeletePress} />
         </View>
-        {openDeleteDialog && (
-          <DeleteTaskDialog
-            taskId={taskId}
-            listId={listId}
-            dialogOpen={openDeleteDialog}
-            onClose={handleDialogClose}
-          />
-        )}
       </View>
+      {openDeleteDialog && (
+        <DeleteTaskDialog
+          taskId={taskId}
+          listId={listId}
+          dialogOpen={openDeleteDialog}
+          onClose={handleDialogClose}
+        />
+      )}
     </Pressable>
   );
 };

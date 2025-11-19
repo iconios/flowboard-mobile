@@ -123,9 +123,6 @@ const CreateCommentModal = ({
         )}
       </View>
       <View style={styles.actions}>
-        <Button icon="cancel" onPress={() => formik.resetForm()}>
-          Cancel
-        </Button>
         <Button
           icon="plus"
           onPress={() => formik.handleSubmit()}
@@ -134,6 +131,9 @@ const CreateCommentModal = ({
           style={styles.primaryButton}
         >
           {formik.isSubmitting ? "Creating" : "Create"}
+        </Button>
+        <Button icon="cancel" onPress={() => formik.resetForm()}>
+          Cancel
         </Button>
       </View>
     </View>

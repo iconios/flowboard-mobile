@@ -88,14 +88,15 @@ const DeleteTaskDialog = ({
             icon="delete"
             onPress={async () => await mutation.mutateAsync(taskId)}
             disabled={mutation.isPending}
+            mode="contained"
+            style={styles.primaryButton}
           >
             Proceed
           </Button>
           <Button
             icon="cancel"
             onPress={onClose}
-            mode="contained"
-            style={styles.primaryButton}
+            labelStyle={{ color: theme.colors.accent }}
           >
             Cancel
           </Button>

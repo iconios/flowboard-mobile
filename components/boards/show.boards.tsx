@@ -19,7 +19,7 @@ const ShowBoards = () => {
   useEffect(() => {
     const getUserId = async () => {
       const user = await GetUserDataService();
-      if (!user) return;
+      if (!user?.id) return;
       const { id } = user;
       setUserId(id);
     };

@@ -22,9 +22,11 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import NotificationBar from "../notificationBar";
 import { useAppTheme } from "@/hooks/theme";
 import { GetUserDataService } from "@/services/auth.service";
+import RemoveBoardMember from "./delete.member.dialog";
 
 const SingleMember = ({ member }: { member: BoardMemberType }) => {
   const [roleModal, setRoleModal] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const queryClient = useQueryClient();
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
@@ -167,7 +169,14 @@ const SingleMember = ({ member }: { member: BoardMemberType }) => {
         />
       )}
       <View style={styles.viewHeader}>
-        <Avatar.Text label={firstAlphabet} size={48} />
+        <Avatar.Text
+          label={firstAlphabet}
+          size={48}
+          style={{
+            backgroundColor:
+              userId === boardOwnerUserId ? theme.colors.primary : "grey",
+          }}
+        />
         <Text style={styles.nameText}>{name}</Text>
       </View>
       <View style={styles.roleView}>
@@ -190,7 +199,11 @@ const SingleMember = ({ member }: { member: BoardMemberType }) => {
           />
 
           {/* Role Selection Modal */}
-          <Modal visible={roleModal} animationType="slide" transparent={true}>
+          <Modal
+            visible={roleModal && userId === boardOwnerUserId}
+            animationType="slide"
+            transparent={true}
+          >
             <View style={styles.roleModalOverlay}>
               <View style={styles.roleModalContent}>
                 <View style={styles.roleModalHeader}>
@@ -227,10 +240,26 @@ const SingleMember = ({ member }: { member: BoardMemberType }) => {
             </View>
           </Modal>
         </View>
-        <Button icon="account-minus" labelStyle={{ paddingVertical: 9 }}>
+        <Button
+          icon="account-minus"
+          labelStyle={{
+            paddingVertical: 9,
+            color: userId === boardOwnerUserId ? theme.colors.primary : "grey",
+          }}
+          onPress={() => setOpenDialog(true)}
+          disabled={userId !== boardOwnerUserId}
+        >
           Remove
         </Button>
       </View>
+      {openDialog && (
+        <RemoveBoardMember
+          memberId={member.memberId}
+          boardId={member.boardId}
+          onClose={() => setOpenDialog(false)}
+          dialogOpen={openDialog}
+        />
+      )}
     </View>
   );
 };

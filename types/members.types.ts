@@ -84,9 +84,12 @@ export type UpdateMemberServerResponseType = z.infer<
   typeof UpdateMemberServerResponseSchema
 >;
 
-export const DeleteMemberServerResponseSchema = UpdateMemberServerResponseSchema.pick({
-  success: true,
-  message: true,
-});
+export const DeleteMemberServerResponseSchema =
+  UpdateMemberServerResponseSchema.pick({
+    success: true,
+    message: true,
+  });
 
-export type DeleteMemberServerResponseType = z.infer<typeof DeleteMemberServerResponseSchema>;
+export type DeleteMemberServerResponseType = z.infer<
+  typeof DeleteMemberServerResponseSchema
+>;

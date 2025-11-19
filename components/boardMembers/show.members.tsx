@@ -1,12 +1,7 @@
 import { GetBoardMembersService } from "@/services/board.members.service";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
 import { useAppTheme } from "@/hooks/theme";
 import SingleMember from "./single.member";
 
@@ -70,15 +65,11 @@ const ShowBoardMembers = ({ boardId }: { boardId: string }) => {
           opacity: 0.7,
           ...theme.fonts.bodyMedium,
         },
-        separator: { height: 8 },
-        footerSpacer: {
-          height: 8,
-        },
         container: {
           flex: 1,
-          minHeight: 300,
+          minHeight: 200,
           backgroundColor: theme.colors.background,
-          marginTop: 8,
+          marginTop: 16,
           paddingHorizontal: 10,
         },
       }),
@@ -116,9 +107,7 @@ const ShowBoardMembers = ({ boardId }: { boardId: string }) => {
         ))
       ) : (
         <View style={styles.emptyWrap}>
-          <Text style={styles.emptyText}>
-            You have not invited any members to this board.
-          </Text>
+          <Text style={styles.emptyText}>No members found for this board.</Text>
           <Text style={styles.refreshText} onPress={handleRefresh}>
             Tap to refresh
           </Text>

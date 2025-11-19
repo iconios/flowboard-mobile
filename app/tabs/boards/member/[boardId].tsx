@@ -8,9 +8,10 @@ import ShowBoardMembers from "@/components/boardMembers/show.members";
 
 const BoardInviteScreen = () => {
   const theme = useAppTheme();
-  const { boardId, title } = useLocalSearchParams();
-  console.log("Board id", boardId);
-  console.log("Title", title);
+  const { boardId, title, ownerId } = useLocalSearchParams();
+  console.log("Board id in BoardMember Screen", boardId);
+  console.log("Title in BoardMember Screen", title);
+  console.log("Owner id in BoardMember Screen", ownerId);
   // Styles object
   const styles = useMemo(
     () =>
@@ -40,7 +41,7 @@ const BoardInviteScreen = () => {
         },
         scrollContent: {
           flexGrow: 1,
-        }
+        },
       }),
     [theme],
   );
@@ -53,8 +54,11 @@ const BoardInviteScreen = () => {
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
           >
-            <CreateBoardMember boardId={boardId as string} />
-              <ShowBoardMembers boardId={boardId as string} />
+            <CreateBoardMember
+              boardId={boardId as string}
+              ownerId={ownerId as string}
+            />
+            <ShowBoardMembers boardId={boardId as string} />
           </ScrollView>
         </View>
       </View>

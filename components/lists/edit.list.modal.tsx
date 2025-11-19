@@ -303,7 +303,11 @@ const UpdateListDialog = ({
               >
                 {mutation.isPending ? "Updating" : "Update"}
               </Button>
-              <Button icon="cancel" onPress={onClose}>
+              <Button
+                icon="cancel"
+                onPress={onClose}
+                labelStyle={{ color: theme.colors.accent }}
+              >
                 Cancel
               </Button>
             </View>

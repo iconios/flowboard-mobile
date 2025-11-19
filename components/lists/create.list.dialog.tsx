@@ -304,7 +304,11 @@ const CreateListDialog = ({
               >
                 {mutation.isPending ? "Creating" : "Create"}
               </Button>
-              <Button icon="cancel" onPress={onClose}>
+              <Button
+                icon="cancel"
+                onPress={onClose}
+                labelStyle={{ color: theme.colors.accent }}
+              >
                 Cancel
               </Button>
             </View>

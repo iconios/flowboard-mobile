@@ -26,6 +26,7 @@ const SingleBoard = ({
   const theme = useAppTheme();
   const [openModal, setOpenModal] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  console.log(`Owner id ${ownerId} for board title ${title} in SingleBoard`);
 
   const styles = StyleSheet.create({
     container: {
@@ -65,7 +66,7 @@ const SingleBoard = ({
       <Link
         href={{
           pathname: "/tabs/boards/[boardId]",
-          params: { boardId: id, title, bgColor },
+          params: { boardId: id, title, bgColor, ownerId },
         }}
       >
         <View>

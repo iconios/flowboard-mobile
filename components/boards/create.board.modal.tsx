@@ -255,6 +255,7 @@ const CreateBoardModal = ({
                     onClose();
                     formik.resetForm();
                   }}
+                  labelStyle={{ color: theme.colors.accent }}
                 >
                   Cancel
                 </Button>

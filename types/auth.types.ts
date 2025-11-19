@@ -59,6 +59,11 @@ export const AuthContextValueSchema = z
       output: z.void(),
     }),
     isInitializing: z.boolean(),
+    boardOwnerUserId: z.string(),
+    setBoardOwnerUserId: z.function({
+      input: [z.string()],
+      output: z.void(),
+    }),
   })
   .or(z.null());
 

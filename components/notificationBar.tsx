@@ -23,14 +23,7 @@ const NotificationBar = ({
   };
 
   const styles = StyleSheet.create({
-    container: {
-      position: "absolute",
-      top: 40,
-      left: 0,
-      right: 0,
-      zIndex: 999999,
-      elevation: 999999,
-    },
+    container: {},
     successSnackbar: {
       backgroundColor: theme.colors.success,
     },
@@ -67,6 +60,12 @@ const NotificationBar = ({
         action={{
           label: "Dismiss",
           onPress: handleDismiss,
+        }}
+        wrapperStyle={{
+          zIndex: 9999,
+          elevation: 9999,
+          position: "absolute",
+          top: 50,
         }}
       >
         <Text style={styles.snackbarText}>{message}</Text>

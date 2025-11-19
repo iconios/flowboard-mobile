@@ -265,6 +265,7 @@ const EditBoardModal = ({
                     formik.resetForm();
                   }}
                   icon="cancel"
+                  labelStyle={{ color: theme.colors.accent }}
                 >
                   Cancel
                 </Button>

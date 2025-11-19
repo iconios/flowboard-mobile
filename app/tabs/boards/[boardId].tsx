@@ -12,13 +12,14 @@ import NotificationBar from "@/components/notificationBar";
 export default function ListsScreen() {
   const theme = useAppTheme();
   const router = useRouter();
-  const { boardId, title, bgColor } = useLocalSearchParams();
+  const { boardId, title, bgColor, ownerId } = useLocalSearchParams();
   const [openDialog, setOpenDialog] = useState(false);
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
   const stringBoardId = boardId as string;
   const stringTitle = title as string;
+  const stringOwnerId = ownerId as string;
 
   const handleCreateListSuccess = (message: string) => {
     setNotification({
@@ -88,6 +89,7 @@ export default function ListsScreen() {
                 params: {
                   boardId: stringBoardId,
                   title: stringTitle,
+                  ownerId: stringOwnerId,
                 },
               })
             }

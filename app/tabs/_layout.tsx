@@ -32,8 +32,6 @@ const TabLayout = () => {
         name="profile"
         options={{
           tabBarLabel: "Profile",
-          title: "Profile",
-          headerShown: true,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "person-circle" : "person-circle-outline"}

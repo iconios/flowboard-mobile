@@ -30,6 +30,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [boardOwnerUserId, setBoardOwnerUserId] = useState("");
 
   // Initialize the AuthProvider
   useEffect(() => {
@@ -49,8 +50,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isLoggedIn,
       setIsLoggedIn,
       isInitializing,
+      boardOwnerUserId,
+      setBoardOwnerUserId,
     }),
-    [isLoggedIn, isInitializing],
+    [isLoggedIn, isInitializing, boardOwnerUserId],
   );
 
   return (

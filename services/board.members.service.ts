@@ -163,7 +163,6 @@ const UpdateBoardMemberRoleService = async (
   }
 };
 
-
 // Remove Board Member Service
 /*
 #Plan:
@@ -180,23 +179,23 @@ const RemoveBoardMemberService = async (id: string) => {
     const token = await getAuthToken();
 
     const response = await fetch(`${API_BASE_URL}/member/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-    
-        // 2. Send response to client
-        const result: DeleteMemberServerResponseType = await response.json();
-    
-        if (!result.success) {
-          throw new Error(`${result.message}`);
-        }
-    
-        return {
-          message: `${result.message}`,
-        };
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // 2. Send response to client
+    const result: DeleteMemberServerResponseType = await response.json();
+
+    if (!result.success) {
+      throw new Error(`${result.message}`);
+    }
+
+    return {
+      message: `${result.message}`,
+    };
   } catch (error) {
     console.error("Error removing board member", error);
 
@@ -204,11 +203,11 @@ const RemoveBoardMemberService = async (id: string) => {
 
     throw new Error("Error removing member");
   }
-}
+};
 
 export {
   CreateBoardMemberService,
   GetBoardMembersService,
   UpdateBoardMemberRoleService,
-  RemoveBoardMemberService
+  RemoveBoardMemberService,
 };

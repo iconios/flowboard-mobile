@@ -5,7 +5,7 @@ import {
   CreateMemberFormSchema,
 } from "@/types/members.types";
 import { FormikHelpers, useFormik } from "formik";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Text,
   View,
@@ -23,13 +23,33 @@ import { useMutation } from "@tanstack/react-query";
 import { CreateBoardMemberService } from "@/services/board.members.service";
 import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "../notificationBar";
+import { GetUserDataService } from "@/services/auth.service";
 
-const CreateBoardMember = ({ boardId }: { boardId: string }) => {
+const CreateBoardMember = ({
+  boardId,
+  ownerId,
+}: {
+  boardId: string;
+  ownerId: string;
+}) => {
+  // Initialize all the required variables and constants
   const theme = useAppTheme();
   const [roleModal, setRoleModal] = useState(false);
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    const getUserId = async () => {
+      const userData = await GetUserDataService();
+      if (!userData?.id) return;
+      setUserId(userData.id);
+    };
+    getUserId();
+  }, []);
+  console.log("UserId in CreateMember", userId);
+  console.log("Owner Id in CreateMember", ownerId);
+
   const initialValues = {
     userEmail: "",
     role: "",
@@ -40,6 +60,7 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
     { id: "2", label: "Admin", value: "admin" },
   ];
 
+  // React query useMutation initialization and implementation
   const mutation = useMutation({
     mutationKey: ["invite-member"],
     mutationFn: async (values: CreateMemberFormType & { board_id: string }) =>
@@ -60,6 +81,7 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
     },
   });
 
+  // Handler for the form submission to create a board member
   const handleFormSubmit = async (
     values: CreateMemberFormType,
     { setSubmitting }: FormikHelpers<CreateMemberFormType>,
@@ -76,6 +98,7 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
     }
   };
 
+  // Initialize and implement the formik library
   const formik = useFormik({
     initialValues,
     validationSchema: toFormikValidationSchema(CreateMemberFormSchema),
@@ -193,6 +216,7 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
               autoCapitalize="none"
               style={styles.textInput}
               mode="outlined"
+              disabled={userId !== ownerId}
             />
             {formik.touched.userEmail && !!formik.errors.userEmail && (
               <HelperText
@@ -210,18 +234,20 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
                 value={formik.values.role}
                 showSoftInputOnFocus={false}
                 caretHidden={true}
+                disabled={userId !== ownerId}
                 onPress={() => setRoleModal(true)}
                 right={
                   <TextInput.Icon
                     icon="chevron-down"
                     onPress={() => setRoleModal(true)}
+                    disabled={userId !== ownerId}
                   />
                 }
               />
 
               {/* Role Selection Modal */}
               <Modal
-                visible={roleModal}
+                visible={roleModal && userId === ownerId}
                 animationType="slide"
                 transparent={true}
               >
@@ -250,6 +276,7 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
                             formik.setFieldValue("role", item.value);
                             setRoleModal(false);
                           }}
+                          disabled={userId !== ownerId}
                         >
                           <Text>{item.label}</Text>
                         </Pressable>
@@ -272,12 +299,10 @@ const CreateBoardMember = ({ boardId }: { boardId: string }) => {
                   ? theme.colors.primary
                   : "grey",
               }}
-              disabled={!formik.values.userEmail}
+              disabled={!formik.values.userEmail || userId !== ownerId}
               onPress={() => formik.handleSubmit()}
             >
-              {formik.values.userEmail
-                ? "Send Invite"
-                : "Enter Email to Enable Send Button"}
+              Send Invite
             </Button>
           </View>
         </View>

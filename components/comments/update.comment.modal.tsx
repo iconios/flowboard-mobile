@@ -195,15 +195,6 @@ const UpdateCommentModal = ({
                   </ScrollView>
                   <View style={styles.actions}>
                     <Button
-                      icon="cancel"
-                      onPress={() => {
-                        formik.resetForm();
-                        onClose();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
                       icon="file-edit"
                       onPress={() => formik.handleSubmit()}
                       disabled={mutation.isPending || formik.isSubmitting}
@@ -211,6 +202,16 @@ const UpdateCommentModal = ({
                       style={styles.primaryButton}
                     >
                       {formik.isSubmitting ? "Updating" : "Update"}
+                    </Button>
+                    <Button
+                      icon="cancel"
+                      onPress={() => {
+                        formik.resetForm();
+                        onClose();
+                      }}
+                      labelStyle={{ color: theme.colors.accent }}
+                    >
+                      Cancel
                     </Button>
                   </View>
                 </View>

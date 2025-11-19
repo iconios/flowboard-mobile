@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/lib/constants";
+import getAuthToken from "@/lib/getAuthToken";
 import {
   CreateMemberInputType,
   CreateMemberInputSchema,
@@ -9,13 +10,6 @@ import {
   DeleteMemberServerResponseType,
 } from "@/types/members.types";
 import { ZodError } from "zod";
-import { GetUserDataService } from "./auth.service";
-
-const getAuthToken = async (): Promise<string> => {
-  const userData = await GetUserDataService();
-  if (!userData?.token) throw new Error("Authentication required");
-  return userData.token;
-};
 
 // Create Board Member Service
 /*

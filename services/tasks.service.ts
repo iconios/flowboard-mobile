@@ -1,7 +1,7 @@
 // Get Tasks for a List
 
 import { API_BASE_URL } from "@/lib/constants";
-import { GetUserDataService } from "./auth.service";
+import getAuthToken from "@/lib/getAuthToken";
 import {
   CreateTaskInputSchema,
   CreateTaskInputType,
@@ -14,12 +14,6 @@ import {
   UpdateTaskServerResponseType,
 } from "@/types/tasks.types";
 import { ZodError } from "zod";
-
-const getAuthToken = async (): Promise<string> => {
-  const userData = await GetUserDataService();
-  if (!userData?.token) throw new Error("Authentication required");
-  return userData.token;
-};
 
 /*
 #Plan:

@@ -6,6 +6,7 @@
 */
 
 import { API_BASE_URL } from "@/lib/constants";
+import getAuthToken from "@/lib/getAuthToken";
 import {
   CreateCommentInputSchema,
   CreateCommentInputType,
@@ -17,14 +18,7 @@ import {
   UpdateCommentInputType,
   UpdateCommentServerResponseType,
 } from "@/types/comments.types";
-import { GetUserDataService } from "./auth.service";
 import { ZodError } from "zod";
-
-const getAuthToken = async (): Promise<string> => {
-  const userData = await GetUserDataService();
-  if (!userData?.token) throw new Error("Authentication required");
-  return userData.token;
-};
 
 const GetCommentsService = async (
   taskId: string,

@@ -7,7 +7,6 @@
 */
 
 import { API_BASE_URL } from "@/lib/constants";
-import { GetUserDataService } from "./auth.service";
 import {
   CreateBoardInputSchema,
   CreateBoardInputType,
@@ -22,6 +21,7 @@ import {
   UpdateBoardServerResponseType,
 } from "@/types/boards.types";
 import { ZodError } from "zod";
+import getAuthToken from "@/lib/getAuthToken";
 
 const GetBoardsService = async () => {
   if (!API_BASE_URL) {
@@ -29,10 +29,8 @@ const GetBoardsService = async () => {
   }
   try {
     // 1. Get and validate token
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
+
     // 2. Fetch the boards from the server
     const response = await fetch(`${API_BASE_URL}/board/`, {
       method: "GET",
@@ -83,10 +81,7 @@ const CreateBoardService = async (
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     // 2. Pass the data to the API
     const validatedData = CreateBoardInputSchema.parse(createBoardData);
@@ -140,10 +135,7 @@ const UpdateBoardService = async (
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     // 2. Pass the data to the API
     console.log("Update board values", boardUpdateData);
@@ -198,10 +190,7 @@ const DeleteBoardService = async (
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     // 2. Pass the data to the API
     const response = await fetch(`${API_BASE_URL}/board/${id}`, {

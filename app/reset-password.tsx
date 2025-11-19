@@ -4,6 +4,7 @@ import {
   Text,
   KeyboardAvoidingView,
   ScrollView,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "@/hooks/theme";
@@ -136,7 +137,7 @@ const ResetPasswordScreen = () => {
           </Text>
         </View>
         <KeyboardAvoidingView>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps="handled">
             <TextInput
               id="email"
               label="Email"
@@ -162,7 +163,10 @@ const ResetPasswordScreen = () => {
               contentStyle={{ height: 50 }}
               labelStyle={styles.send}
               mode="contained"
-              onPress={() => formik.handleSubmit()}
+              onPress={() => {
+                Keyboard.dismiss();
+                formik.handleSubmit();
+              }}
               disabled={formik.isSubmitting}
               style={styles.sendButton}
             >

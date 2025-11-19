@@ -5,6 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Button, Checkbox, HelperText, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,6 +50,9 @@ const SignUpScreen = () => {
       });
       formik.resetForm();
       setChecked(false);
+      setTimeout(() => {
+        router.push("/log-in");
+      }, 4000);
     },
     onError: (error) => {
       setNotification({
@@ -162,160 +168,171 @@ const SignUpScreen = () => {
         </View>
 
         {/* Container for the sign up form fields and buttons */}
-        <KeyboardAvoidingView behavior="padding">
-          <ScrollView>
-            <TextInput
-              id="firstname"
-              label="Firstname"
-              value={formik.values.firstname}
-              onChangeText={formik.handleChange("firstname")}
-              onBlur={formik.handleBlur("firstname")}
-              error={
-                formik.touched.firstname && Boolean(formik.errors.firstname)
-              }
-              aria-label="firstname text input field"
-              style={styles.textInput}
-              mode="outlined"
-            />
-            {formik.touched.firstname && !!formik.errors.firstname && (
-              <HelperText
-                type="error"
-                visible={formik.touched.firstname && !!formik.errors.firstname}
-              >
-                {formik.errors.firstname}
-              </HelperText>
-            )}
-
-            <TextInput
-              id="lastname"
-              label="Lastname"
-              value={formik.values.lastname}
-              onChangeText={formik.handleChange("lastname")}
-              onBlur={formik.handleBlur("lastname")}
-              error={formik.touched.lastname && Boolean(formik.errors.lastname)}
-              style={styles.textInput}
-              mode="outlined"
-            />
-            {formik.touched.lastname && !!formik.errors.lastname && (
-              <HelperText
-                type="error"
-                visible={formik.touched.lastname && !!formik.errors.lastname}
-              >
-                {formik.errors.lastname}
-              </HelperText>
-            )}
-
-            <TextInput
-              id="email"
-              label="Email"
-              value={formik.values.email}
-              onChangeText={formik.handleChange("email")}
-              onBlur={formik.handleBlur("email")}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              style={styles.textInput}
-              mode="outlined"
-            />
-            {formik.touched.email && !!formik.errors.email && (
-              <HelperText
-                type="error"
-                visible={formik.touched.email && !!formik.errors.email}
-              >
-                {formik.errors.email}
-              </HelperText>
-            )}
-
-            <TextInput
-              id="password"
-              label="Password"
-              value={formik.values.password}
-              onChangeText={formik.handleChange("password")}
-              onBlur={formik.handleBlur("password")}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              style={styles.textInput}
-              mode="outlined"
-              secureTextEntry={!isPasswordVisible}
-              right={
-                <TextInput.Icon
-                  icon={isPasswordVisible ? "eye-off" : "eye"}
-                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              }
-            />
-            {formik.touched.password && !!formik.errors.password && (
-              <HelperText
-                type="error"
-                visible={formik.touched.password && !!formik.errors.password}
-              >
-                {formik.errors.password}
-              </HelperText>
-            )}
-
-            <TextInput
-              id="confirmPassword"
-              label="Confirm Password"
-              value={formik.values.confirmPassword}
-              onChangeText={formik.handleChange("confirmPassword")}
-              onBlur={formik.handleBlur("confirmPassword")}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              style={styles.textInput}
-              mode="outlined"
-              secureTextEntry={!isConfirmPasswordVisible}
-              right={
-                <TextInput.Icon
-                  icon={isConfirmPasswordVisible ? "eye-off" : "eye"}
-                  onPress={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                />
-              }
-            />
-            {formik.touched.confirmPassword &&
-              !!formik.errors.confirmPassword && (
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 120}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <TextInput
+                id="firstname"
+                label="Firstname"
+                value={formik.values.firstname}
+                onChangeText={formik.handleChange("firstname")}
+                onBlur={formik.handleBlur("firstname")}
+                error={
+                  formik.touched.firstname && Boolean(formik.errors.firstname)
+                }
+                aria-label="firstname text input field"
+                style={styles.textInput}
+                mode="outlined"
+              />
+              {formik.touched.firstname && !!formik.errors.firstname && (
                 <HelperText
                   type="error"
                   visible={
-                    formik.touched.confirmPassword &&
-                    !!formik.errors.confirmPassword
+                    formik.touched.firstname && !!formik.errors.firstname
                   }
                 >
-                  {formik.errors.confirmPassword}
+                  {formik.errors.firstname}
                 </HelperText>
               )}
 
-            <View style={styles.agree}>
-              <Checkbox
-                status={checked ? "checked" : "unchecked"}
-                onPress={() => setChecked(!checked)}
+              <TextInput
+                id="lastname"
+                label="Lastname"
+                value={formik.values.lastname}
+                onChangeText={formik.handleChange("lastname")}
+                onBlur={formik.handleBlur("lastname")}
+                error={
+                  formik.touched.lastname && Boolean(formik.errors.lastname)
+                }
+                style={styles.textInput}
+                mode="outlined"
               />
-              <Text style={{ flexWrap: "wrap", flexShrink: 1 }}>
-                I agree to the Terms of Service and Privacy Policy
-              </Text>
-            </View>
-            <Button
-              contentStyle={{ height: 50 }}
-              labelStyle={styles.signUp}
-              mode="contained"
-              onPress={() => formik.handleSubmit()}
-              disabled={formik.isSubmitting || !checked}
-            >
-              Sign up
-            </Button>
-            <View style={styles.footer}>
-              <Text>Already have an account?</Text>
+              {formik.touched.lastname && !!formik.errors.lastname && (
+                <HelperText
+                  type="error"
+                  visible={formik.touched.lastname && !!formik.errors.lastname}
+                >
+                  {formik.errors.lastname}
+                </HelperText>
+              )}
+
+              <TextInput
+                id="email"
+                label="Email"
+                value={formik.values.email}
+                onChangeText={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={styles.textInput}
+                mode="outlined"
+              />
+              {formik.touched.email && !!formik.errors.email && (
+                <HelperText
+                  type="error"
+                  visible={formik.touched.email && !!formik.errors.email}
+                >
+                  {formik.errors.email}
+                </HelperText>
+              )}
+
+              <TextInput
+                id="password"
+                label="Password"
+                value={formik.values.password}
+                onChangeText={formik.handleChange("password")}
+                onBlur={formik.handleBlur("password")}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                style={styles.textInput}
+                mode="outlined"
+                secureTextEntry={!isPasswordVisible}
+                right={
+                  <TextInput.Icon
+                    icon={isPasswordVisible ? "eye-off" : "eye"}
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                  />
+                }
+              />
+              {formik.touched.password && !!formik.errors.password && (
+                <HelperText
+                  type="error"
+                  visible={formik.touched.password && !!formik.errors.password}
+                >
+                  {formik.errors.password}
+                </HelperText>
+              )}
+
+              <TextInput
+                id="confirmPassword"
+                label="Confirm Password"
+                value={formik.values.confirmPassword}
+                onChangeText={formik.handleChange("confirmPassword")}
+                onBlur={formik.handleBlur("confirmPassword")}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                style={styles.textInput}
+                mode="outlined"
+                secureTextEntry={!isConfirmPasswordVisible}
+                right={
+                  <TextInput.Icon
+                    icon={isConfirmPasswordVisible ? "eye-off" : "eye"}
+                    onPress={() =>
+                      setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                    }
+                  />
+                }
+              />
+              {formik.touched.confirmPassword &&
+                !!formik.errors.confirmPassword && (
+                  <HelperText
+                    type="error"
+                    visible={
+                      formik.touched.confirmPassword &&
+                      !!formik.errors.confirmPassword
+                    }
+                  >
+                    {formik.errors.confirmPassword}
+                  </HelperText>
+                )}
+
+              <View style={styles.agree}>
+                <Checkbox
+                  status={checked ? "checked" : "unchecked"}
+                  onPress={() => setChecked(!checked)}
+                />
+                <Text style={{ flexWrap: "wrap", flexShrink: 1 }}>
+                  I agree to the Terms of Service and Privacy Policy
+                </Text>
+              </View>
               <Button
-                mode="text"
-                onPress={() => router.push("/log-in")}
-                labelStyle={styles.login}
+                contentStyle={{ height: 50 }}
+                labelStyle={styles.signUp}
+                mode="contained"
+                onPress={() => formik.handleSubmit()}
+                disabled={formik.isSubmitting || !checked}
               >
-                Log in
+                Sign up
               </Button>
-            </View>
-          </ScrollView>
+              <View style={styles.footer}>
+                <Text>Already have an account?</Text>
+                <Button
+                  mode="text"
+                  onPress={() => router.push("/log-in")}
+                  labelStyle={styles.login}
+                >
+                  Log in
+                </Button>
+              </View>
+            </ScrollView>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </View>
       {notification && (

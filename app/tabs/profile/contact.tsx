@@ -151,8 +151,8 @@ const ContactScreen = () => {
                 height: 100,
                 backgroundColor: theme.colors.accent,
                 marginHorizontal: 20,
-                borderBottomLeftRadius: 56,
-                borderBottomRightRadius: 56,
+                borderTopLeftRadius: 56,
+                borderTopRightRadius: 56,
               },
             ]}
           >

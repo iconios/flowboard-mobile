@@ -9,6 +9,7 @@ import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "@/components/notificationBar";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useUserContext";
+import DeleteUserDialog from "@/components/user/delete.user.dialog";
 
 export default function ProfileScreen() {
   const theme = useAppTheme();
@@ -17,6 +18,7 @@ export default function ProfileScreen() {
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [user, setUser] = useState({
     firstname: "",
     email: "",
@@ -139,7 +141,7 @@ export default function ProfileScreen() {
           <Pressable onPress={() => router.push("/tabs/profile/terms")}>
             <Text style={styles.textItem}>Terms of Service</Text>
           </Pressable>
-          <Pressable>
+          <Pressable onPress={() => setOpenDeleteDialog(true)}>
             <Text
               style={[
                 styles.textItem,
@@ -163,6 +165,12 @@ export default function ProfileScreen() {
           </Button>
         </View>
       </View>
+      {openDeleteDialog && (
+        <DeleteUserDialog
+          dialogOpen={openDeleteDialog}
+          onClose={() => setOpenDeleteDialog(false)}
+        />
+      )}
     </SafeAreaView>
   );
 }

@@ -1,5 +1,4 @@
 import { API_BASE_URL } from "@/lib/constants";
-import { GetUserDataService } from "./auth.service";
 import {
   CreateListInputSchema,
   CreateListInputType,
@@ -11,6 +10,7 @@ import {
   UpdateListServerResponseType,
 } from "@/types/list.types";
 import { ZodError } from "zod";
+import getAuthToken from "@/lib/getAuthToken";
 
 // Get Lists for a Board
 /*
@@ -24,10 +24,7 @@ const GetListsService = async (boardId: string) => {
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     const response = await fetch(`${API_BASE_URL}/list/${boardId}`, {
       method: "GET",
@@ -65,10 +62,7 @@ const CreateListService = async (createListData: CreateListInputType) => {
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     const { boardId, ...newListData } =
       CreateListInputSchema.parse(createListData);
@@ -113,10 +107,7 @@ const UpdateListService = async (updateListData: UpdateListInputType) => {
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     const { listId, ...updateData } =
       UpdateListInputSchema.parse(updateListData);
@@ -160,10 +151,7 @@ const DeleteListService = async (listId: string) => {
     throw new Error("Server Url is required");
   }
   try {
-    const userData = await GetUserDataService();
-    if (!userData) throw new Error("User data is required");
-    const token = userData.token;
-    if (!token) throw new Error("Token not found");
+    const token = await getAuthToken();
 
     const response = await fetch(`${API_BASE_URL}/list/${listId}`, {
       method: "DELETE",

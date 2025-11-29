@@ -247,6 +247,7 @@ const CreateBoardModal = ({
                   onPress={formik.submitForm}
                   mode="contained"
                   style={styles.button}
+                  icon="file-plus"
                 >
                   {mutation.isPending ? "Creating" : "Create"}
                 </Button>
@@ -256,6 +257,7 @@ const CreateBoardModal = ({
                     formik.resetForm();
                   }}
                   labelStyle={{ color: theme.colors.accent }}
+                  icon="cancel"
                 >
                   Cancel
                 </Button>

@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAppTheme } from "@/hooks/theme";
 import ShowBoards from "@/components/boards/show.boards";
@@ -33,11 +33,19 @@ export default function BoardScreen() {
     buttonText: {
       ...theme.fonts.headlineSmall,
     },
+    subTitle: {
+      ...theme.fonts.bodyMedium,
+      paddingVertical: 10,
+      textAlign: "center",
+    },
   });
 
   return (
     <SafeAreaView style={styles.container} edges={["left", "right"]}>
       <View style={styles.content}>
+        <Text style={styles.subTitle}>
+          On this screen, you can view all your boards.
+        </Text>
         <Button
           icon="shape-square-plus"
           mode="elevated"

@@ -75,9 +75,9 @@ const DeleteUserDialog = ({
         <Dialog.Title style={styles.titleText}>Delete Account</Dialog.Title>
         <Dialog.Content>
           <Text>
-            This action cannot be undone. Deleting your account will delete all data
-            associated with your account. Are you sure you want to delete your user
-            account?
+            This action cannot be undone. Deleting your account will delete all
+            data associated with your account. Are you sure you want to delete
+            your user account?
           </Text>
         </Dialog.Content>
         <Dialog.Actions style={styles.actions}>

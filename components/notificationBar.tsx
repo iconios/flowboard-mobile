@@ -16,6 +16,7 @@ const NotificationBar = ({
     if (message && message.trim() !== "") {
       setVisible(true);
     }
+
   }, [message]);
 
   const handleDismiss = () => {

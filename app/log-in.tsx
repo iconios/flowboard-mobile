@@ -48,6 +48,7 @@ const LoginScreen = () => {
       }, 1200);
     },
     onError: (error) => {
+      setTriggerKey((prev) => prev + 1);
       setNotification({
         message: error.message || "Failed to log in user",
         messageType: "error",

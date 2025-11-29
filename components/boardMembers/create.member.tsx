@@ -24,6 +24,7 @@ import { CreateBoardMemberService } from "@/services/board.members.service";
 import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "../notificationBar";
 import { GetUserDataService } from "@/services/auth.service";
+import {v4 as uuidv4} from "uuid";
 
 const CreateBoardMember = ({
   boardId,
@@ -38,6 +39,7 @@ const CreateBoardMember = ({
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
+  const [triggerKey, setTriggerKey] = useState(0)
   const [userId, setUserId] = useState("");
   useEffect(() => {
     const getUserId = async () => {
@@ -66,10 +68,12 @@ const CreateBoardMember = ({
     mutationFn: async (values: CreateMemberFormType & { board_id: string }) =>
       await CreateBoardMemberService(values),
     onSuccess: (result) => {
+      setTriggerKey(triggerKey + 1);
       setNotification({
         message: `${result.message}`,
         messageType: "success",
       });
+      formik.resetForm();
     },
     onError: (error) => {
       const errorMessage =
@@ -191,6 +195,7 @@ const CreateBoardMember = ({
         <NotificationBar
           message={notification.message}
           messageType={notification.messageType}
+          key={triggerKey}
         />
       )}
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

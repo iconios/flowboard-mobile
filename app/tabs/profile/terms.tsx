@@ -45,7 +45,7 @@ const TermsScreen = () => {
     <SafeAreaView edges={["top", "right", "left"]} style={styles.container}>
       {loading && (
         <View style={styles.activityView}>
-          <ActivityIndicator />
+          <ActivityIndicator size="large" />
         </View>
       )}
 

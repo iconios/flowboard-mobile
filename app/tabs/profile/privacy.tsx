@@ -37,10 +37,16 @@ const PrivacyScreen = () => {
       flex: 1,
     },
     activityView: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      display: "flex"
-    }
+      zIndex: 1,
+    },
   });
   return (
     <SafeAreaView edges={["top", "right", "left"]} style={styles.container}>

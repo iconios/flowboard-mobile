@@ -24,7 +24,7 @@ import { CreateBoardMemberService } from "@/services/board.members.service";
 import { NotificationBarType } from "@/types/sign-up.types";
 import NotificationBar from "../notificationBar";
 import { GetUserDataService } from "@/services/auth.service";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 const CreateBoardMember = ({
   boardId,
@@ -39,7 +39,7 @@ const CreateBoardMember = ({
   const [notification, setNotification] = useState<NotificationBarType | null>(
     null,
   );
-  const [triggerKey, setTriggerKey] = useState(0)
+  const [triggerKey, setTriggerKey] = useState(0);
   const [userId, setUserId] = useState("");
   useEffect(() => {
     const getUserId = async () => {

@@ -1,15 +1,23 @@
+import "react-native-reanimated"
 import HeaderTitle from "@/components/stack/headerTitle";
 import { appTheme } from "@/hooks/theme";
-import { Stack } from "expo-router";
-import { PaperProvider } from "react-native-paper";
+import { Stack, useRouter } from "expo-router";
+import { Button, PaperProvider } from "react-native-paper";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react.query";
 import { AuthProvider, useAuth } from "@/hooks/useUserContext";
 import { useAppFonts } from "@/hooks/useFonts";
-import { ActivityIndicator, StyleSheet, View, Text } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
 
 const StackWithGuard = () => {
   const { isLoggedIn, isInitializing } = useAuth();
+  const router = useRouter();
   if (isInitializing) return null; // or a splash component
 
   return (
@@ -24,6 +32,19 @@ const StackWithGuard = () => {
       }}
     >
       <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen
+          name="value-carousel"
+          options={{
+            headerShown: true,
+            title: "",
+            headerRight: () => (
+              <Button mode="text" onPress={() => router.replace("/")}>
+                Skip
+              </Button>
+            ),
+            gestureEnabled: false,            
+          }}
+        />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="log-in" options={{ title: "" }} />
         <Stack.Screen name="sign-up" options={{ title: "" }} />
@@ -61,13 +82,15 @@ export default function RootLayout() {
   }
 
   return (
-    <PaperProvider theme={appTheme}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider theme={appTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <StackWithGuard />
         </AuthProvider>
       </QueryClientProvider>
     </PaperProvider>
+    </GestureHandlerRootView>
   );
 }
 

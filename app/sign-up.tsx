@@ -156,6 +156,17 @@ const SignUpScreen = () => {
       marginTop: 10,
       marginBottom: 10,
     },
+    checkboxView: {
+      width: 20,
+      height: 20,
+      borderRadius: 6,
+      borderWidth: 2,
+      borderColor: theme.colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "transparent", // important: don’t cover the icon
+      overflow: "visible",
+    },
   });
 
   return (

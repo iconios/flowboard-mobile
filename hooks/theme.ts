@@ -1,4 +1,9 @@
-import { DefaultTheme, configureFonts, useTheme } from "react-native-paper";
+import {
+  MD3LightTheme,
+  configureFonts,
+  useTheme,
+  type MD3Theme,
+} from "react-native-paper";
 import {
   Inter_100Thin,
   Inter_200ExtraLight,
@@ -24,6 +29,9 @@ const colors = {
   light: "#f8fafc", // slate-50,
   secondary: "#28C4A9",
   secondaryText: "#000000",
+  surface: "#FFFFFF",
+  onSurface: "#0F172A",
+  outline: "#0F172A",
 };
 
 // Complete MD3 font configuration
@@ -127,23 +135,29 @@ const fonts = configureFonts({
 
 // Create the theme
 export const appTheme = {
-  ...DefaultTheme,
+  ...MD3LightTheme,
   colors: {
-    ...DefaultTheme.colors,
+    ...MD3LightTheme.colors,
     // Main colors
     primary: colors.primary,
+    onPrimary: "#FFFFFF",
+    primaryContainer: "#E3D7FF",
     secondary: colors.secondary,
+    onSecondary: "#FFFFFF",
     accent: colors.accent,
 
     // Background colors
     background: colors.bg,
-    surface: colors.bg,
+    surface: colors.surface,
+    surfaceVariant: "#F3F4FF",
     backdrop: "rgba(15, 23, 42, 0.5)", // semi-transparent slate-900
 
     // Text colors
     text: colors.text,
     secondaryText: colors.secondaryText,
-    onSurface: colors.text,
+    onSurface: colors.onSurface,
+    onSurfaceVariant: "#4B5563",
+    outline: colors.outline,
     onBackground: colors.text,
 
     // Status colors

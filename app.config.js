@@ -1,7 +1,7 @@
 const API_URLS = {
   development: "http://192.168.0.151:8000",
   staging: "http://localhost:8000",
-  production: "https://flow-board.onrender.com:8000",
+  production: "https://flow-board.onrender.com",
 };
 
 // Determine current environment

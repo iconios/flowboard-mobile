@@ -5,7 +5,7 @@ export const queryClient = new QueryClient({
     queries: {
       retry: 2,
       retryDelay: 1000,
-      staleTime: 5 * 60 * 60, // 5mins
+      staleTime: 5 * 60 * 1000, // 5mins
       gcTime: 10 * 60 * 1000, // 10mins cache time
     },
     mutations: {

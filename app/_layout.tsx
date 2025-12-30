@@ -8,12 +8,15 @@ import { queryClient } from "@/lib/react.query";
 import { AuthProvider, useAuth } from "@/hooks/useUserContext";
 import { useAppFonts } from "@/hooks/useFonts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as SplashScreen from "expo-splash-screen";
 import {
-  ActivityIndicator,
-  StyleSheet,
   View,
-  Text,
 } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { GetBoardsService } from "@/services/boards.service";
+
+// Initialize splash screen 
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const StackWithGuard = () => {
   const { isLoggedIn, isInitializing } = useAuth();
@@ -57,68 +60,69 @@ const StackWithGuard = () => {
   );
 };
 
-export default function RootLayout() {
+// Splash screen + prefetch + readiness component
+const AppBootstrap = () => {
   const { fontsLoaded, fontError } = useAppFonts();
-  // Show loading indicator while fonts are loading
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color={appTheme.colors.primary} />
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
+  const [ready, setReady] = useState(false);
+  const { isLoggedIn, isInitializing } = useAuth();
 
-  // Handle font loading errors
+  // Prefetch and cache boards
+  useEffect(() => {
+    const prepare = async () => {
+      if (!isLoggedIn) {
+        setReady(true);
+        return;
+      }
+
+      try {
+        await queryClient.prefetchQuery({
+          queryKey: ["boards"],
+          queryFn: () => GetBoardsService(),
+        })
+      } catch (e) {
+        console.warn(e)
+      } finally {
+        setReady(true);
+      }
+    };
+    prepare();
+  }, [isLoggedIn])
+
+  
+  const appIsReady = !isInitializing && ready && (fontsLoaded || fontError);
+   const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      try {
+        await SplashScreen.hideAsync();
+      } catch {}
+    }
+  }, [appIsReady])
+
+  useEffect(() => {
+    // Handle font loading errors
   if (fontError) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error loading fonts</Text>
-        <Text style={styles.errorSubtext}>
-          The app will continue with system fonts
-        </Text>
-      </View>
-    );
-  }
+    console.log("Error loading fonts")  }
+  }, [fontError])
+  
+  if (!appIsReady) return null;
 
+  return (
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <StackWithGuard />
+    </View>
+  )
+}
+
+export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={appTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <StackWithGuard />
+          <AppBootstrap />
         </AuthProvider>
       </QueryClientProvider>
     </PaperProvider>
     </GestureHandlerRootView>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: appTheme.colors.background,
-    padding: 20,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: appTheme.colors.text,
-    fontFamily: "Inter_400Regular",
-  },
-  errorText: {
-    fontSize: 18,
-    color: appTheme.colors.error,
-    fontFamily: "Inter_600SemiBold",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  errorSubtext: {
-    fontSize: 14,
-    color: appTheme.colors.text,
-    fontFamily: "Inter_400Regular",
-    textAlign: "center",
-  },
-});
+};

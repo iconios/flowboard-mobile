@@ -43,7 +43,7 @@ export default {
     versionCode: 1,
     usesCleartextTraffic: currentEnv === "development",
     adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
+      backgroundColor: "#0D1B2A",
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
@@ -57,11 +57,11 @@ export default {
       "expo-splash-screen",
       {
         image: "./assets/images/splash-icon.png",
-        imageWidth: 200,
+        imageWidth: 220,
         resizeMode: "contain",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#FFFFFF",
         dark: {
-          backgroundColor: "#000000",
+          backgroundColor: "#0D1B2A",
         },
       },
     ],

@@ -43,9 +43,6 @@ export default function BoardScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["left", "right"]}>
       <View style={styles.content}>
-        <Text style={styles.subTitle}>
-          On this screen, you can view all your boards.
-        </Text>
         <Button
           icon="shape-square-plus"
           mode="elevated"

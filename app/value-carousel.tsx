@@ -12,6 +12,7 @@ import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const ValueCarousel = () => {
   const carouselRef = useRef<ICarouselInstance>(null);
@@ -109,7 +110,7 @@ const ValueCarousel = () => {
           style={styles.button}
           labelStyle={styles.buttonLabel}
         >
-          {item.button}
+          {item.button} <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
         </Button>
       </View>
     </View>
@@ -119,7 +120,7 @@ const ValueCarousel = () => {
     <SafeAreaView style={styles.mainContainer}>
       <Carousel
         ref={carouselRef}
-        loop={false}
+        loop={true}
         width={width}
         height={CAROUSEL_HEIGHT}
         data={data}

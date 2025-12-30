@@ -70,7 +70,7 @@ const ShowBoards = () => {
           paddingVertical: 12,
         },
       }),
-    [theme],
+    [],
   );
 
   if (isPending) {

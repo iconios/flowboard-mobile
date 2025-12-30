@@ -17,11 +17,10 @@ import { GetBoardsService } from "@/services/boards.service";
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const StackWithGuard = () => {
-  const { isLoggedIn, isInitializing, hasSeenCarousel, markCarouselSeen } =
+  const { isLoggedIn, isInitializing, markCarouselSeen } =
     useAuth();
   const router = useRouter();
   if (isInitializing) return null; // or a splash component
-  if (!hasSeenCarousel) return <Redirect href="/value-carousel" />;
 
   return (
     <Stack

@@ -1,6 +1,6 @@
 const API_URLS = {
   development: "http://192.168.0.151:8000",
-  staging: "http://localhost:8000",
+  staging: "https://flow-board.onrender.com",
   production: "https://flow-board.onrender.com",
 };
 
@@ -75,5 +75,8 @@ export default {
     ENVIRONMENT: currentEnv,
     EAS_BUILD_PROFILE: process.env.EAS_BUILD_PROFILE,
     APP_VARIANT: process.env.APP_VARIANT,
+    eas: {
+      projectId: "e1c17888-ca58-44d1-bc1a-eca38866e9a8",
+    },
   },
 };

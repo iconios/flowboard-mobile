@@ -13,9 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "@/hooks/useUserContext";
 
 const ValueCarousel = () => {
   const carouselRef = useRef<ICarouselInstance>(null);
+  const { markCarouselSeen } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width, height } = Dimensions.get("window");
   const CAROUSEL_HEIGHT = height * 0.8;
@@ -106,11 +108,15 @@ const ValueCarousel = () => {
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          onPress={() => router.replace("/")}
+          onPress={async () => {
+            await markCarouselSeen();
+            router.replace("/");
+          }}
           style={styles.button}
           labelStyle={styles.buttonLabel}
         >
-          {item.button} <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+          {item.button}{" "}
+          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
         </Button>
       </View>
     </View>

@@ -7,6 +7,7 @@
 
 import { VerifyUserService } from "@/services/auth.service";
 import { AuthContextValueType } from "@/types/auth.types";
+import * as SecureStorage from "expo-secure-store";
 import {
   createContext,
   ReactNode,
@@ -29,31 +30,45 @@ export const useAuth = () => {
 // 3. Create the Context Provider having children as argument
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hasSeenCarousel, setHasSeenCarousel] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [boardOwnerUserId, setBoardOwnerUserId] = useState("");
 
   // Initialize the AuthProvider
   useEffect(() => {
     const authState = async () => {
+      let ok = false;
       try {
-        const ok = await VerifyUserService();
-        setIsLoggedIn(ok);
-      } finally {
-        setIsInitializing(false);
+        ok = await VerifyUserService();
+      } catch {
+        ok = false;
       }
+
+      const seen = await SecureStorage.getItemAsync("hasSeenCarousel");
+
+      setIsLoggedIn(ok);
+      setHasSeenCarousel(seen === "true");
+      setIsInitializing(false);
     };
     authState();
   }, []);
+
+  const markCarouselSeen = async () => {
+    await SecureStorage.setItemAsync("hasSeenCarousel", "true");
+    setHasSeenCarousel(true);
+  };
 
   const authData = useMemo(
     () => ({
       isLoggedIn,
       setIsLoggedIn,
+      hasSeenCarousel,
+      markCarouselSeen,
       isInitializing,
       boardOwnerUserId,
       setBoardOwnerUserId,
     }),
-    [isLoggedIn, isInitializing, boardOwnerUserId],
+    [isLoggedIn, isInitializing, boardOwnerUserId, hasSeenCarousel],
   );
 
   return (

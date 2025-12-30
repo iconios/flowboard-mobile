@@ -1,3 +1,4 @@
+import MarkCarouselSeen from "@/lib/markCarouselSeen";
 import { z } from "zod";
 
 export const RegisterAccountSchema = z
@@ -64,6 +65,8 @@ export const AuthContextValueSchema = z
       input: [z.string()],
       output: z.void(),
     }),
+    hasSeenCarousel: z.boolean(),
+    markCarouselSeen: z.function(),
   })
   .or(z.null());
 

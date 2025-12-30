@@ -1,7 +1,7 @@
-import "react-native-reanimated"
+import "react-native-reanimated";
 import HeaderTitle from "@/components/stack/headerTitle";
 import { appTheme } from "@/hooks/theme";
-import { Stack, useRouter } from "expo-router";
+import { Redirect, Stack, useRouter } from "expo-router";
 import { Button, PaperProvider } from "react-native-paper";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react.query";
@@ -9,19 +9,19 @@ import { AuthProvider, useAuth } from "@/hooks/useUserContext";
 import { useAppFonts } from "@/hooks/useFonts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  View,
-} from "react-native";
+import { View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { GetBoardsService } from "@/services/boards.service";
 
-// Initialize splash screen 
+// Initialize splash screen
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const StackWithGuard = () => {
-  const { isLoggedIn, isInitializing } = useAuth();
+  const { isLoggedIn, isInitializing, hasSeenCarousel, markCarouselSeen } =
+    useAuth();
   const router = useRouter();
   if (isInitializing) return null; // or a splash component
+  if (!hasSeenCarousel) return <Redirect href="/value-carousel" />;
 
   return (
     <Stack
@@ -41,11 +41,17 @@ const StackWithGuard = () => {
             headerShown: true,
             title: "",
             headerRight: () => (
-              <Button mode="text" onPress={() => router.replace("/")}>
+              <Button
+                mode="text"
+                onPress={async () => {
+                  await markCarouselSeen();
+                  router.replace("/");
+                }}
+              >
                 Skip
               </Button>
             ),
-            gestureEnabled: false,            
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -78,51 +84,51 @@ const AppBootstrap = () => {
         await queryClient.prefetchQuery({
           queryKey: ["boards"],
           queryFn: () => GetBoardsService(),
-        })
+        });
       } catch (e) {
-        console.warn(e)
+        console.warn(e);
       } finally {
         setReady(true);
       }
     };
     prepare();
-  }, [isLoggedIn])
+  }, [isLoggedIn]);
 
-  
   const appIsReady = !isInitializing && ready && (fontsLoaded || fontError);
-   const onLayoutRootView = useCallback(async () => {
+  const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       try {
         await SplashScreen.hideAsync();
       } catch {}
     }
-  }, [appIsReady])
+  }, [appIsReady]);
 
   useEffect(() => {
     // Handle font loading errors
-  if (fontError) {
-    console.log("Error loading fonts")  }
-  }, [fontError])
-  
+    if (fontError) {
+      console.log("Error loading fonts");
+    }
+  }, [fontError]);
+
   if (!appIsReady) return null;
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <StackWithGuard />
     </View>
-  )
-}
+  );
+};
 
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={appTheme}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <AppBootstrap />
-        </AuthProvider>
-      </QueryClientProvider>
-    </PaperProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AppBootstrap />
+          </AuthProvider>
+        </QueryClientProvider>
+      </PaperProvider>
     </GestureHandlerRootView>
   );
-};
+}
